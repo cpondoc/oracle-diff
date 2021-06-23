@@ -31,7 +31,7 @@ This function grabs all of the existing data feeds, and then parses the JSON
 to get all of the addresses
  """
 def grab_feeds():
-    with open('./feeds/chainlink.json') as f:
+    with open('feeds/chainlink.json') as f:
         data = json.load(f)
     for elem in data:
         [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(elem, data[elem]['address'])
@@ -56,6 +56,4 @@ Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
     grab_feeds()
-    #[roundId, answer, startedAt, updatedAt, answeredInRound] = grab_feeds()
-
 
