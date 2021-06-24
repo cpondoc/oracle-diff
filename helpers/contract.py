@@ -3,6 +3,7 @@ File: contract.py
 Helper function to create a contract.py 
 """
 
+""" Necessary helper functions """
 from web3 import Web3
 import json
 
