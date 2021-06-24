@@ -9,6 +9,9 @@ Maintained by: Chris Pondoc
 * AMPL/ETH
 * LTC/USD
 
+### Notes
+Note that Band Protocol Network does not support AMPL or LTC, despite being listed as one of the available price data feeds.
+
 ## Updates
 * 6/24 - Data from just about every oracle is successfully being collected. Now need to consider a couple of other factors
     * Quantities/metrics to calculate
