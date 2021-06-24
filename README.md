@@ -8,3 +8,9 @@ Maintained by: Chris Pondoc
 * ETH/USD
 * AMPL/ETH
 * LTC/USD
+
+## Updates
+* 6/24 - Data from just about every oracle is successfully being collected. Now need to consider a couple of other factors
+    * Quantities/metrics to calculate
+    * Unifying the logic
+    * Style + Modularization if necessary
