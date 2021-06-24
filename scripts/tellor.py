@@ -16,4 +16,3 @@ address = '0xb2b6c6232d38fae21656703cac5a74e5314741d4'
 contract = web3.eth.contract(address=Web3.toChecksumAddress(address), abi=abi)
 print(contract.functions.getCurrentValue(1).call())
 f.close()
-#print(con)
