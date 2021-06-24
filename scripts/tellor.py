@@ -6,6 +6,7 @@ Grabs data from Tellor and get all results
 """ Necessary Libraries """
 import json
 from web3 import Web3
+from config import PROJECT_URL
 
 """ Constants """
 granularity = 1000000 # Defined granularity for all of the data feeds
