@@ -56,4 +56,3 @@ Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
     grab_feeds()
-
