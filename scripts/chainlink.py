@@ -6,6 +6,7 @@ Retrieves necessary data and prices from Chainlink!
 """ Libraries necessary for development """
 from web3 import Web3
 import json
+import pandas as pd
 
 """ Used to help calculate the actual conversion rate from the raw number
 on the blockchain """
@@ -32,11 +33,14 @@ This function grabs all of the existing data feeds, and then parses the JSON
 to get all of the addresses
  """
 def grab_feeds():
+    prices = []
     with open('feeds/chainlink.json') as f:
         data = json.load(f)
     for elem in data:
         [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(elem, data[elem]['address'])
+        prices.append(calculate_price(answer, decimals))
         print_info(elem, roundId, answer, startedAt, updatedAt, answeredInRound, decimals)
+    return prices
 
 
 """ 
