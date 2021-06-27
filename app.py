@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import scripts.chainlink
+import scripts.tellor
 
 """
 # Comparing Oracles
@@ -51,24 +52,20 @@ oracles = pd.DataFrame({
 chainlink_prices = scripts.chainlink.grab_feeds()
 chainlink_data = ['Chainlink'] + chainlink_prices
 oracles.loc[len(oracles.index)] = chainlink_data
+
+# Getting data for Tellor
+tellor_contract = scripts.tellor.set_up_contract()
+tellor_prices = scripts.tellor.grab_feeds(tellor_contract)
+tellor_data = ['Tellor'] + tellor_prices
+oracles.loc[len(oracles.index)] = tellor_data
+
+# Display data as a table
 oracles
 
-df = pd.DataFrame({
-  'first column': [1, 2, 3, 4],
-  'second column': [10, 20, 30, 40]
-})
-
-df
-
 """
-# Here is a sample line chart
-This is pretty cool
+### Average Time between Requests
+The next metric I decided to look at was the average time in between each request.
 """
-chart_data = pd.DataFrame(
-     np.random.randn(20, 3),
-     columns=['a', 'b', 'c'])
-
-st.line_chart(chart_data)
 
 """
 ## Works Cited

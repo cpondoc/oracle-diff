@@ -2,11 +2,11 @@
     "BTC/USD": {
         "address": "0x6135b13325bfC4B00278B4abC5e20bbce2D6580e"
     },
-    "AMPL/ETH": {
-        "address": "0x562C092bEb3a6DF77aDf0BB604F52c018E4f2814"
-    },
     "ETH/USD": {
         "address": "0x9326BFA02ADD2366b30bacB125260Af641031331"
+    },
+    "AMPL/ETH": {
+        "address": "0x562C092bEb3a6DF77aDf0BB604F52c018E4f2814"
     },
     "LTC/USD": {
         "address": "0xCeE03CF92C7fFC1Bad8EAA572d69a4b61b6D4640"

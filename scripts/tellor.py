@@ -6,7 +6,6 @@ Grabs data from Tellor and get all results
 """ Necessary Libraries """
 import json
 from web3 import Web3
-from config import PROJECT_URL
 
 """ Constants """
 granularity = 1000000 # Defined granularity for all of the data feeds
@@ -27,16 +26,19 @@ def set_up_contract():
 Function: grab_feeds()
 Get the correct data feed IDs from Tellor and get their value
 """
-def grab_feeds():
+def grab_feeds(contract):
+    prices = []
     with open('feeds/tellor.json') as f:
         data = json.load(f)
     for elem in data:
         id_num = int(data[elem]['id'])
         [worked, value, timestamp] = (contract.functions.getCurrentValue(id_num).call())
-        print("Tellor Data for " + str(elem))
+        prices.append(value/granularity)
+        """print("Tellor Data for " + str(elem))
         print("Exchange Rate: " + str(value/granularity))
         print("Timestamp: " + str(timestamp))
-        print("\n")
+        print("\n")"""
+    return prices
 
 """ 
 Function: main
@@ -44,7 +46,5 @@ Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
     contract = set_up_contract()
-    """[worked, value, timestamp] = (contract.functions.getCurrentValue(1).call())
-    print(value / granularity)"""
-    grab_feeds()
+    grab_feeds(contract)
     

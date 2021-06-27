@@ -39,7 +39,7 @@ def grab_feeds():
     for elem in data:
         [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(elem, data[elem]['address'])
         prices.append(calculate_price(answer, decimals))
-        print_info(elem, roundId, answer, startedAt, updatedAt, answeredInRound, decimals)
+        # print_info(elem, roundId, answer, startedAt, updatedAt, answeredInRound, decimals) -- originally used to print data
     return prices
 
 
