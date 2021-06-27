@@ -1,12 +1,8 @@
+# Importing essential libraries
 import streamlit as st
-# To make things easier later, we're also importing numpy and pandas for
-# working with sample data.
 import numpy as np
 import pandas as pd
-from web3 import Web3
-import json
 import scripts.chainlink
-# import scripts/chainlink
 
 """
 # Comparing Oracles
@@ -16,7 +12,9 @@ In order to dip my feet into the world of crypto and blockchain development, I d
 within the space and compare relevant metrics, enabling me to gain comprehension through practical data science work.
 
 *Note: Streamlit data app may take a few seconds to load in data from testnet.*
+"""
 
+"""
 ## Background
 Oracles help bring data from the outside world onto the blockchain, which help smart contracts make decisions/dispense money/
 perform a plethora of tasks [1]. The data we'll be focusing on comes in the form on **conversion rates**, such as BTC/USD or BTC/ETH.
