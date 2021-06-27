@@ -3,6 +3,9 @@ Looking at differences between oracles. Simply put, the functions look at the di
 
 Maintained by: Chris Pondoc
 
+## Structure
+Files in `helpers` helped me to organize connecting to each contract using `web3.py`, utilizing each application binary interface (ABI), and grabbing the correct values. `app.py` is the streamlit app that puts all of the data together. `feeds` help me organize IDs for different data feeds (or addresses, depending on the protocol). Contracts contain individual ABIs for each contract.
+
 ## Run
 To run the app, simply install `requirements.txt` and then run `streamlit run app.py`.
 
