@@ -3,6 +3,9 @@ Looking at differences between oracles. Simply put, the functions look at the di
 
 Maintained by: Chris Pondoc
 
+## Run
+To run the app, simply install `requirements.txt` and then run `streamlit run app.py`.
+
 ## Conversions
 * BTC/USD
 * ETH/USD
