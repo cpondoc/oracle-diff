@@ -43,6 +43,13 @@ This function returns prices for given coins
 def return_prices(contract, coin):
    return contract.functions.getReferenceData(coin, 'USD').call()[0] / granularity
 
+"""
+Function: grab_gas_estimate
+Gets the estimate of gas from pulling info from one data point from the oracle
+"""
+def grab_gas_estimate(contract, coin_name):
+    return contract.functions.getReferenceData(coin_name, 'USD').estimateGas()
+
 """ 
 Function: main
 Runs all helper functions by setting up contract, grabbing values, and printing.

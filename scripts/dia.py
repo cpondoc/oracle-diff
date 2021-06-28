@@ -60,5 +60,4 @@ Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
     contract = get_contract()
-    # Bitcoin, Litecoin, Ethereum
     print(contract.functions.getCoinInfo("Bitcoin").call())

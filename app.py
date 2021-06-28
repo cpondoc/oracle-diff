@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 """
-# Comparing Oracles
+# 🔮 Comparing Oracles
 Written by: Christopher Pondoc
 
 In order to dip my feet into the world of crypto and blockchain development, I decided to analyze different oracles
@@ -60,7 +60,9 @@ Below is a table of initial results. Note that for the Band Protocol, I had a bi
 smart contract to get the values for AMPL and LTC, so I marked those as `-1`.
 """
 
-coins = ["BTC", "ETH", "AMPL", "LTC"] # Coins to look at!
+# Coins and oracles to look at!
+coins = ["BTC", "ETH", "AMPL", "LTC"]
+oracle_names = ["Tellor", "Chainlink", "Band Protocol", "DIA"]
 
 # Dataframe for the Oracle
 oracles = pd.DataFrame({
@@ -174,6 +176,7 @@ Key:
 * 0 - Tellor
 * 1 - Chainlink
 * 2 - DIA
+* 3 - Band Protocol
 """
 
 # Grabbing all gas prices
@@ -181,10 +184,12 @@ gas_prices = []
 gas_prices.append(scripts.tellor.grab_gas_estimate(tellor_contract, "BTC/USD"))
 gas_prices.append(scripts.chainlink.grab_gas_estimate("BTC/USD"))
 gas_prices.append(scripts.dia.grab_gas_estimate(dia_contract, "Bitcoin"))
+gas_prices.append(scripts.band.grab_gas_estimate(band_contract, "BTC"))
 st.markdown("** Graph of Gas Estimates for Grabbing Current Value **")
-st.text('Average Gas Price for Single Value Request for Tellor: ' + str(gas_prices[0]) + ' Gwei')
-st.text('Average Gas Price for Single Value Request for Chainlink: ' + str(gas_prices[1]) + ' Gwei')
-st.text('Average Gas Price for Single Value Request for DIA: ' + str(gas_prices[2]) + ' Gwei')
+
+# Print all results!
+for i in range(0, len(oracles)):
+    st.text('Average Gas Price for Single Value Request for ' + oracle_names[i] + ': ' + str(gas_prices[i]) + ' Gwei')
 st.bar_chart((gas_prices))
 
 """
