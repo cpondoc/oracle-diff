@@ -17,7 +17,7 @@ To run the app, simply install `requirements.txt` and then run `streamlit run ap
 * AMPL/USD
 * LTC/USD
 
-### Notes
+## Notes
 Note that Band Protocol Network does not support AMPL or LTC, despite being listed as one of the available price data feeds.
 
 ## Updates
