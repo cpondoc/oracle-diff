@@ -9,6 +9,14 @@ import scripts.tellor
 import scripts.dia
 import scripts.band
 
+# Configuration!
+st.set_page_config(
+     page_title="Oracle-Diff",
+     page_icon="🔮",
+     layout="centered",
+     initial_sidebar_state="expanded",
+)
+
 """
 # Comparing Oracles
 Written by: Christopher Pondoc
@@ -150,6 +158,20 @@ for i in range(0, len(coins)):
     st.text('Average time in between each request for Tellor: ' + str(averages[0]) + ' seconds')
     st.text('Average time in between each request for Chainlink: ' + str(averages[1]) + ' seconds')
     st.line_chart(np.transpose(coin_times))
+
+"""
+### Gas Prices
+The final metric I decided to investigate involved analyzing the gas estimates for calling certain functions
+from each oracle's smart contract. Specifically, I focused on looking at the amount of gas required to pull a specific
+value from the chain, as well as how that value changed for each exchange.
+"""
+
+# For Tellor
+gas_prices = []
+for coin in coins:
+    gas_prices.append(scripts.tellor.grab_time_change(tellor_contract, coin + "/USD"))
+gas_prices
+st.bar_chart(np.transpose(gas_prices))
 
 """
 ## Works Cited

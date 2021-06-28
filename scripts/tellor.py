@@ -76,6 +76,16 @@ def grab_time_change(contract, id_name):
         new_timestamp = old_timestamp
     return all_diffs[::-1]
 
+"""
+Function: grab_gas_estimate()
+Estimate gas for retrieving data from the chain.
+"""
+def grab_gas_estimate(contract, id_name):
+    with open('feeds/tellor.json') as f:
+        data = json.load(f)
+    id_num = int(data[id_name]['id'])
+    return (contract.functions.getCurrentValue(id_num).estimateGas())
+
 
 """
 Function: print_data()
@@ -93,6 +103,7 @@ Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
     contract = set_up_contract()
-    # grab_feeds(contract)
-    # grab_price_change(contract, "BTC/USD")
-    # sgrab_time_change(contract, "BTC/USD")
+    grab_gas_estimate(contract, "BTC/USD")
+    #grab_feeds(contract)
+    #grab_price_change(contract, "BTC/USD")
+    #grab_time_change(contract, "BTC/USD")
