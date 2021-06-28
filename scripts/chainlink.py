@@ -31,7 +31,7 @@ def get_chainlink_data(name, address):
 Function: grab_feeds
 This function grabs all of the existing data feeds, and then parses the JSON
 to get all of the addresses
- """
+"""
 def grab_feeds():
     prices = []
     with open('feeds/chainlink.json') as f:
@@ -39,8 +39,34 @@ def grab_feeds():
     for elem in data:
         [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(elem, data[elem]['address'])
         prices.append(calculate_price(answer, decimals))
-        # print_info(elem, roundId, answer, startedAt, updatedAt, answeredInRound, decimals)
     return prices
+
+"""
+Function: grab_round
+Get data from a specific round
+"""
+def grab_round(elem, address, roundId):
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
+    f = open('contracts/chainlink.json', 'r')
+    abi = json.load(f)
+    contract = web3.eth.contract(address=address, abi=abi)
+    latestData = contract.functions.getRoundData(roundId).call()
+    return latestData
+
+""" 
+Function: grab_price_change
+Grab last 50 rounds of chainlink data for a specific exchange
+ """
+def grab_price_change(exchange):
+    all_prices = []
+    with open('feeds/chainlink.json') as f:
+        data = json.load(f)
+    [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
+    all_prices.append(calculate_price(answer, decimals))
+    for i in range(0, 50):
+            [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
+            all_prices.append(calculate_price(answer, decimals))
+    return all_prices
 
 
 """ 
@@ -60,4 +86,4 @@ Function: main
 Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
-    grab_feeds()
+    grab_price_change("BTC/USD")

@@ -16,7 +16,7 @@ Written by: Christopher Pondoc
 In order to dip my feet into the world of crypto and blockchain development, I decided to analyze different oracles
 within the space and compare relevant metrics, enabling me to gain comprehension through practical data science work.
 
-*Note: Streamlit data app may take a few seconds to load in data from Ethereum mainnet!*
+*Note: Streamlit data app may take a few seconds to load in data from Ethereum Mainnet!*
 """
 
 """
@@ -93,13 +93,24 @@ oracles
 The next metric I decided to look at was the change in value over time of a certain exchange. Specifically,
 I looked at the last 50 values of each exchange, and then compared over each exchange. See the line chart for
 each exchange, as well as for each protocol, below.
+
+Key:
+* 0 - Tellor
+* 1 - Chainlink
 """
 
 """
 #### BTC/USD
 """
+
+coin_times = np.zeros((2, 51))
+
+# For BTC
 tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, "BTC/USD")
-st.line_chart(tellor_btc_prices)
+chainlink_btc_prices = scripts.chainlink.grab_price_change("BTC/USD")
+coin_times[0] = tellor_btc_prices
+coin_times[1] = chainlink_btc_prices
+st.line_chart(np.transpose(coin_times))
 
 """
 #### ETH/USD
@@ -124,7 +135,7 @@ like Tellor, due to the economics of the token, time between each request is not
 This graph takes a look at a couple of different requests for different conversions. The horizontal
 axis represents request number while the vertical axis represents number of seconds.
 
-Average amount of time: 
+Average amount of time (in seconds): 
 """
 exchanges = ["BTC/USD", "ETH/USD"]
 average = 0
