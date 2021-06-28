@@ -12,7 +12,7 @@ To run the app, simply install `requirements.txt` and then run `streamlit run ap
 ## Conversions
 * BTC/USD
 * ETH/USD
-* AMPL/ETH
+* AMPL/USD
 * LTC/USD
 
 ### Notes
