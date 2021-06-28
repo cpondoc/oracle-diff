@@ -1,14 +1,14 @@
 {
     "BTC/USD": {
-        "address": "0x6135b13325bfC4B00278B4abC5e20bbce2D6580e"
+        "address": "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c"
     },
     "ETH/USD": {
-        "address": "0x9326BFA02ADD2366b30bacB125260Af641031331"
+        "address": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
     },
-    "AMPL/ETH": {
-        "address": "0x562C092bEb3a6DF77aDf0BB604F52c018E4f2814"
+    "AMPL/USD": {
+        "address": "0xe20CA8D7546932360e37E9D72c1a47334af57706"
     },
     "LTC/USD": {
-        "address": "0xCeE03CF92C7fFC1Bad8EAA572d69a4b61b6D4640"
+        "address": "0x6AF09DF7563C363B5763b9102712EbeD3b9e859B"
     }
 }

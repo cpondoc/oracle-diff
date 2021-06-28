@@ -1,9 +1,12 @@
-# Importing essential libraries
+# Importing essential libraries for parsing data and presentation
 import streamlit as st
 import numpy as np
 import pandas as pd
+
+# Importing scripts from individual oracles
 import scripts.chainlink
 import scripts.tellor
+import scripts.dia
 
 """
 # Comparing Oracles
@@ -22,10 +25,10 @@ perform a plethora of tasks [1]. The data we'll be focusing on comes in the form
 
 ### Specific Oracles
 In the case of this task, we'll be focusing on the following oracles:
-* Tellor
-* Chainlink
-* Band Protocol
-* DIA 
+* Tellor [2]
+* Chainlink [3]
+* Band Protocol [4]
+* DIA [5]
 """
 
 """ 
@@ -36,15 +39,23 @@ The first step is to grab pertinent data from each of the oracles. In this case,
 The first data I looked at were simply the pure conversion rates. For this, I simply pulled the data from each
 of the smart contracts using their Application Binary Interface (ABI), as well as `web3.py`.
 
+Specifically, I decided to key in on the following conversions:
+* BTC/USD
+* ETH/USD
+* AMPL/USD
+* LTC/USD
+
 Below is a table of initial results.
 """
+
+coins = ["BTC", "ETH", "AMPL", "LTC"] # Coins to look at!
 
 # Dataframe for the Oracle
 oracles = pd.DataFrame({
     'Name': [],
     'BTC/USD': [],
     'ETH/USD': [],
-    'AMPL/ETH': [],
+    'AMPL/USD': [],
     'LTC/USD': []
 })
 
@@ -59,33 +70,72 @@ tellor_prices = scripts.tellor.grab_feeds(tellor_contract)
 tellor_data = ['Tellor'] + tellor_prices
 oracles.loc[len(oracles.index)] = tellor_data
 
+# Getting data for Dia
+dia_data = ['DIA']
+for i in range(0, len(coins)):
+    dia_data.append(scripts.dia.return_price(coins[i]))
+oracles.loc[len(oracles.index)] = dia_data
+
 # Display data as a table
 oracles
 
 """
-### Average Time between Requests
-The next metric I decided to look at was the average time in between each request.
+### Change in Exchange Rate over Time
+The next metric I decided to look at was the change in value over time of a certain exchange. Specifically,
+I looked at the last 50 values of each exchange, and then compared over each exchange. See the line chart for
+each exchange, as well as for each protocol, below.
 """
 
 """
-### BTC/USD
+#### BTC/USD
 """
 tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, "BTC/USD")
 st.line_chart(tellor_btc_prices)
 
 """
-### ETH/USD
+#### ETH/USD
 """
 tellor_eth_prices = scripts.tellor.grab_price_change(tellor_contract, "ETH/USD")
 st.line_chart(tellor_eth_prices)
 
 """
-### LTC/USD
+#### LTC/USD
 """
 tellor_ltc_prices = scripts.tellor.grab_price_change(tellor_contract, "LTC/USD")
 st.line_chart(tellor_ltc_prices)
 
 """
+### Average Time Between Each Request
+Next, I decided to investigate the time that it took to satisfy each request. When looking at networks
+like Tellor, due to the economics of the token, time between each request is not a pertinent 
+"""
+
+"""
+#### Tellor
+This graph takes a look at a couple of different requests for different conversions. The horizontal
+axis represents request number while the vertical axis represents number of seconds.
+
+Average amount of time: 
+"""
+exchanges = ["BTC/USD", "ETH/USD"]
+average = 0
+tellor_times = np.zeros((2, 50))
+for i in range(0, 2):
+    tellor_current = scripts.tellor.grab_time_change(tellor_contract, exchanges[i])
+    average = np.average(tellor_current)
+    tellor_times[i] = tellor_current
+average
+st.line_chart(np.transpose(tellor_times))
+
+"""
 ## Works Cited
 [1] https://www.coindesk.com/what-is-an-oracle
+
+[2] https://tellor.io/
+
+[3] https://chain.link/
+
+[4] https://bandprotocol.com/
+
+[5] https://diadata.org/
 """

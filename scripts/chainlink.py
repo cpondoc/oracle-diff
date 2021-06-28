@@ -18,7 +18,7 @@ Function: get_chainlink_data
 This function gets the value of all Chainlink Data necessary for running stuff
 """
 def get_chainlink_data(name, address):
-    web3 = Web3(Web3.HTTPProvider('https://kovan.infura.io/v3/50b206f08a5745818266c90ac93c86b2'))
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
     f = open('contracts/chainlink.json', 'r')
     abi = json.load(f)
     contract = web3.eth.contract(address=address, abi=abi)
@@ -39,7 +39,7 @@ def grab_feeds():
     for elem in data:
         [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(elem, data[elem]['address'])
         prices.append(calculate_price(answer, decimals))
-        # print_info(elem, roundId, answer, startedAt, updatedAt, answeredInRound, decimals) -- originally used to print data
+        # print_info(elem, roundId, answer, startedAt, updatedAt, answeredInRound, decimals)
     return prices
 
 

@@ -6,6 +6,7 @@ Grabs data from Tellor and get all results
 """ Necessary Libraries """
 import json
 from web3 import Web3
+from datetime import datetime
 
 """ Constants """
 granularity = 1000000 # Defined granularity for all of the data feeds
@@ -54,6 +55,27 @@ def grab_price_change(contract, id_name):
         all_prices.append(value/granularity)
     return all_prices[::-1]
 
+"""
+Function: grab_price_change()
+Get the change in price over a certain amount of time!
+"""
+def grab_time_change(contract, id_name):
+    all_diffs = []
+    old_timestamp = datetime.now()
+    new_timestamp = datetime.now()
+    with open('feeds/tellor.json') as f:
+        data = json.load(f)
+    id_num = int(data[id_name]['id'])
+    [worked, value, timestamp] = (contract.functions.getCurrentValue(id_num).call())
+    new_timestamp = datetime.utcfromtimestamp(timestamp)
+    for i in range(0, 50):
+        [worked, value, timestamp] = (contract.functions.getDataBefore(id_num, timestamp).call())
+        old_timestamp = datetime.utcfromtimestamp(timestamp)
+        time_diff = new_timestamp - old_timestamp
+        all_diffs.append(time_diff.seconds)
+        new_timestamp = old_timestamp
+    return all_diffs[::-1]
+
 
 """
 Function: print_data()
@@ -73,4 +95,4 @@ if __name__ == "__main__":
     contract = set_up_contract()
     grab_feeds(contract)
     grab_price_change(contract, "BTC/USD")
-    
+    grab_time_change(contract, "BTC/USD")

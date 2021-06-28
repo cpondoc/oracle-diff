@@ -25,6 +25,17 @@ def print_info(name, price, comparison, time):
     print("\n")
 
 """ 
+Function: return_price
+Returns price from the .json response!
+"""
+def return_price(coin):
+    coin_json = get_value(coin)
+    return coin_json['Price']
+
+btc_price = return_price("BTC")
+print(btc_price)
+
+""" 
 Function: main
 Runs all of the entirety of the helper functions
 """
