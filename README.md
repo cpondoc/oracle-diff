@@ -3,6 +3,8 @@ Looking at differences between oracles. Simply put, the functions look at the di
 
 Maintained by: Chris Pondoc
 
+![image info](./images/dashboard_screenshot.png)
+
 ## Structure
 * `helpers` helped me to organize connecting to each contract using `web3.py`, utilizing each application binary interface (ABI), and grabbing the correct values.
 * `app.py` is the streamlit app that puts all of the data together.
