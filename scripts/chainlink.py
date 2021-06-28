@@ -6,7 +6,6 @@ Retrieves necessary data and prices from Chainlink!
 """ Libraries necessary for development """
 from web3 import Web3
 import json
-import pandas as pd
 from datetime import datetime
 
 """ Used to help calculate the actual conversion rate from the raw number
@@ -89,6 +88,19 @@ def grab_time_change(exchange):
             new_timestamp = old_timestamp
     return all_diffs[::-1]
 
+"""
+Function: grab_gas_estimate
+Grabs the gas estimate for getting the latest value of an exchange
+"""
+def grab_gas_estimate(id_name):
+    with open('feeds/chainlink.json') as f:
+        data = json.load(f)
+    address = (data[id_name]['address'])
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
+    f = open('contracts/chainlink.json', 'r')
+    abi = json.load(f)
+    contract = web3.eth.contract(address=address, abi=abi)
+    return (contract.functions.latestRoundData().estimateGas())
 
 """ 
 Function: print_info
@@ -107,4 +119,4 @@ Function: main
 Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
-   grab_time_change("BTC/USD")
+   print(grab_gas_estimate("BTC/USD"))

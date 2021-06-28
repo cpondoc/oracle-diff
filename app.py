@@ -116,7 +116,6 @@ for coin in coins:
     coin_prices[0] = tellor_btc_prices
     coin_prices[1] = chainlink_btc_prices
     st.markdown('** Graph of Value of ' + coin + ' **')
-    #st.text('Graph of Value of: ' + coin)
     st.line_chart(np.transpose(coin_prices))
 
 """
@@ -164,14 +163,20 @@ for i in range(0, len(coins)):
 The final metric I decided to investigate involved analyzing the gas estimates for calling certain functions
 from each oracle's smart contract. Specifically, I focused on looking at the amount of gas required to pull a specific
 value from the chain, as well as how that value changed for each exchange.
+
+Key:
+* 0 - Tellor
+* 1 - Chainlink
 """
 
-# For Tellor
+# Grabbing all gas prices
 gas_prices = []
-for coin in coins:
-    gas_prices.append(scripts.tellor.grab_time_change(tellor_contract, coin + "/USD"))
-gas_prices
-st.bar_chart(np.transpose(gas_prices))
+gas_prices.append(scripts.tellor.grab_gas_estimate(tellor_contract, "BTC/USD"))
+gas_prices.append(scripts.chainlink.grab_gas_estimate("BTC/USD"))
+st.markdown("** Graph of Gas Estimates for Grabbing Current Value **")
+st.text('Average Gas Price for Single Value Request for Tellor: ' + str(gas_prices[0]) + ' Gwei')
+st.text('Average Gas Price for Single Value Request for Chainlink: ' + str(gas_prices[1]) + ' Gwei')
+st.bar_chart((gas_prices))
 
 """
 ## Works Cited
