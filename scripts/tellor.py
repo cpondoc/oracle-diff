@@ -95,4 +95,4 @@ if __name__ == "__main__":
     contract = set_up_contract()
     # grab_feeds(contract)
     # grab_price_change(contract, "BTC/USD")
-    # grab_time_change(contract, "BTC/USD")
+    # sgrab_time_change(contract, "BTC/USD")
