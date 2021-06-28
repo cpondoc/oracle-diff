@@ -105,24 +105,14 @@ Key:
 
 coin_times = np.zeros((2, 51))
 
-# For BTC
-tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, "BTC/USD")
-chainlink_btc_prices = scripts.chainlink.grab_price_change("BTC/USD")
-coin_times[0] = tellor_btc_prices
-coin_times[1] = chainlink_btc_prices
-st.line_chart(np.transpose(coin_times))
-
-"""
-#### ETH/USD
-"""
-tellor_eth_prices = scripts.tellor.grab_price_change(tellor_contract, "ETH/USD")
-st.line_chart(tellor_eth_prices)
-
-"""
-#### LTC/USD
-"""
-tellor_ltc_prices = scripts.tellor.grab_price_change(tellor_contract, "LTC/USD")
-st.line_chart(tellor_ltc_prices)
+# Loop for each protocol
+for coin in coins:
+    tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, coin + "/USD")
+    chainlink_btc_prices = scripts.chainlink.grab_price_change(coin + "/USD")
+    coin_times[0] = tellor_btc_prices
+    coin_times[1] = chainlink_btc_prices
+    st.text('Graph for: ' + coin)
+    st.line_chart(np.transpose(coin_times))
 
 """
 ### Average Time Between Each Request

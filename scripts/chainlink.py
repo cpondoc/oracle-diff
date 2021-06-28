@@ -66,7 +66,7 @@ def grab_price_change(exchange):
     for i in range(0, 50):
             [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
             all_prices.append(calculate_price(answer, decimals))
-    return all_prices
+    return all_prices[::-1]
 
 
 """ 
