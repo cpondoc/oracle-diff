@@ -56,8 +56,8 @@ def grab_price_change(contract, id_name):
     return all_prices[::-1]
 
 """
-Function: grab_price_change()
-Get the change in price over a certain amount of time!
+Function: grab_time_change()
+Get the change in update time over a certain amount of requests!
 """
 def grab_time_change(contract, id_name):
     all_diffs = []
@@ -93,6 +93,6 @@ Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
     contract = set_up_contract()
-    grab_feeds(contract)
-    grab_price_change(contract, "BTC/USD")
-    grab_time_change(contract, "BTC/USD")
+    # grab_feeds(contract)
+    # grab_price_change(contract, "BTC/USD")
+    # grab_time_change(contract, "BTC/USD")

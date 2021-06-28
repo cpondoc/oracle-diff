@@ -7,6 +7,7 @@ Retrieves necessary data and prices from Chainlink!
 from web3 import Web3
 import json
 import pandas as pd
+from datetime import datetime
 
 """ Used to help calculate the actual conversion rate from the raw number
 on the blockchain """
@@ -68,6 +69,26 @@ def grab_price_change(exchange):
             all_prices.append(calculate_price(answer, decimals))
     return all_prices[::-1]
 
+"""
+Function: grab_time_change
+Grab the time in between each request for last 50 rounds of chainlink data for an exchange
+"""
+def grab_time_change(exchange):
+    all_diffs = []
+    old_timestamp = datetime.now()
+    new_timestamp = datetime.now()
+    with open('feeds/chainlink.json') as f:
+        data = json.load(f)
+    [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
+    new_timestamp = datetime.utcfromtimestamp(updatedAt)
+    for i in range(0, 50):
+            [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
+            old_timestamp = datetime.utcfromtimestamp(updatedAt)
+            time_diff = new_timestamp - old_timestamp
+            all_diffs.append(time_diff.seconds)
+            new_timestamp = old_timestamp
+    return all_diffs[::-1]
+
 
 """ 
 Function: print_info
@@ -86,4 +107,4 @@ Function: main
 Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
-    grab_price_change("BTC/USD")
+   grab_time_change("BTC/USD")

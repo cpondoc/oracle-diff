@@ -21,8 +21,8 @@ within the space and compare relevant metrics, enabling me to gain comprehension
 
 """
 ## Background
-Oracles help bring data from the outside world onto the blockchain, which help smart contracts make decisions/dispense money/
-perform a plethora of tasks [1]. The data we'll be focusing on comes in the form on **conversion rates**, such as BTC/USD or BTC/ETH.
+Oracles help bring data from the outside world onto the blockchain, which help smart contracts make decisions/dispense money/perform 
+a plethora of tasks [1]. The data we'll be focusing on comes in the form on **conversion rates**, such as BTC/USD or BTC/ETH.
 
 ### Specific Oracles
 In the case of this task, we'll be focusing on the following oracles:
@@ -62,15 +62,11 @@ oracles = pd.DataFrame({
 })
 
 # Getting data for Chainlink
-chainlink_prices = scripts.chainlink.grab_feeds()
-chainlink_data = ['Chainlink'] + chainlink_prices
-oracles.loc[len(oracles.index)] = chainlink_data
+oracles.loc[len(oracles.index)] = ['Chainlink'] +  scripts.chainlink.grab_feeds()
 
 # Getting data for Tellor
 tellor_contract = scripts.tellor.set_up_contract()
-tellor_prices = scripts.tellor.grab_feeds(tellor_contract)
-tellor_data = ['Tellor'] + tellor_prices
-oracles.loc[len(oracles.index)] = tellor_data
+oracles.loc[len(oracles.index)] = ['Tellor'] + scripts.tellor.grab_feeds(tellor_contract)
 
 # Getting data for Dia
 dia_data = ['DIA']
@@ -100,19 +96,20 @@ Key:
 """
 
 """
-#### BTC/USD
+#### Note: Horizontal Axis is Request #, Vertical Axis is Price
 """
 
-coin_times = np.zeros((2, 51))
+coin_prices = np.zeros((2, 51)) # To store data
 
 # Loop for each protocol
 for coin in coins:
     tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, coin + "/USD")
     chainlink_btc_prices = scripts.chainlink.grab_price_change(coin + "/USD")
-    coin_times[0] = tellor_btc_prices
-    coin_times[1] = chainlink_btc_prices
-    st.text('Graph for: ' + coin)
-    st.line_chart(np.transpose(coin_times))
+    coin_prices[0] = tellor_btc_prices
+    coin_prices[1] = chainlink_btc_prices
+    st.markdown('** Graph of Value of ' + coin + ' **')
+    #st.text('Graph of Value of: ' + coin)
+    st.line_chart(np.transpose(coin_prices))
 
 """
 ### Average Time Between Each Request
@@ -125,17 +122,34 @@ like Tellor, due to the economics of the token, time between each request is not
 This graph takes a look at a couple of different requests for different conversions. The horizontal
 axis represents request number while the vertical axis represents number of seconds.
 
+Key:
+* 0 - Tellor
+* 1 - Chainlink
+
 Average amount of time (in seconds): 
 """
-exchanges = ["BTC/USD", "ETH/USD"]
-average = 0
-tellor_times = np.zeros((2, 50))
-for i in range(0, 2):
-    tellor_current = scripts.tellor.grab_time_change(tellor_contract, exchanges[i])
-    average = np.average(tellor_current)
-    tellor_times[i] = tellor_current
-average
-st.line_chart(np.transpose(tellor_times))
+    
+coin_times = np.zeros((2, 50)) # To store data
+averages = [0, 0] # To look at coin averages
+
+# Looping through each coin
+for i in range(0, len(coins)):
+
+    # Grab time changes
+    tellor_times = scripts.tellor.grab_time_change(tellor_contract, coins[i] + "/USD")
+    chainlink_times = scripts.chainlink.grab_time_change(coins[i] + "/USD")
+
+    # Update stacked array and avearges
+    coin_times[0] = tellor_times
+    coin_times[1] = chainlink_times
+    averages[0] = np.average(tellor_times)
+    averages[1] = np.average(chainlink_times)
+
+    # Print out values for specific coin
+    st.markdown('** Graph of time in between requests of ' + coins[i] + ' **')
+    st.text('Average time in between each request for Tellor: ' + str(averages[0]) + ' seconds')
+    st.text('Average time in between each request for Chainlink: ' + str(averages[1]) + ' seconds')
+    st.line_chart(np.transpose(coin_times))
 
 """
 ## Works Cited
