@@ -34,11 +34,36 @@ def grab_feeds(contract):
         id_num = int(data[elem]['id'])
         [worked, value, timestamp] = (contract.functions.getCurrentValue(id_num).call())
         prices.append(value/granularity)
-        """print("Tellor Data for " + str(elem))
-        print("Exchange Rate: " + str(value/granularity))
-        print("Timestamp: " + str(timestamp))
-        print("\n")"""
+        for i in range(0, 50):
+            [worked, value, timestamp] = (contract.functions.getDataBefore(id_num, timestamp).call())
     return prices
+
+"""
+Function: grab_price_change()
+Get the change in price over a certain amount of time!
+"""
+def grab_price_change(contract, id_name):
+    all_prices = []
+    with open('feeds/tellor.json') as f:
+        data = json.load(f)
+    id_num = int(data[id_name]['id'])
+    [worked, value, timestamp] = (contract.functions.getCurrentValue(id_num).call())
+    all_prices.append(value/granularity)
+    for i in range(0, 50):
+        [worked, value, timestamp] = (contract.functions.getDataBefore(id_num, timestamp).call())
+        all_prices.append(value/granularity)
+    return all_prices[::-1]
+
+
+"""
+Function: print_data()
+Print all of the data!
+"""
+def print_data(elem, value, timestamp):
+    print("Tellor Data for " + str(elem))
+    print("Exchange Rate: " + str(value/granularity))
+    print("Timestamp: " + str(timestamp))
+    print("\n")
 
 """ 
 Function: main
@@ -47,4 +72,5 @@ Runs all of the entirety of the helper functions
 if __name__ == "__main__":
     contract = set_up_contract()
     grab_feeds(contract)
+    grab_price_change(contract, "BTC/USD")
     

@@ -68,6 +68,24 @@ The next metric I decided to look at was the average time in between each reques
 """
 
 """
+### BTC/USD
+"""
+tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, "BTC/USD")
+st.line_chart(tellor_btc_prices)
+
+"""
+### ETH/USD
+"""
+tellor_eth_prices = scripts.tellor.grab_price_change(tellor_contract, "ETH/USD")
+st.line_chart(tellor_eth_prices)
+
+"""
+### LTC/USD
+"""
+tellor_ltc_prices = scripts.tellor.grab_price_change(tellor_contract, "LTC/USD")
+st.line_chart(tellor_ltc_prices)
+
+"""
 ## Works Cited
 [1] https://www.coindesk.com/what-is-an-oracle
 """
