@@ -7,6 +7,7 @@ import pandas as pd
 import scripts.chainlink
 import scripts.tellor
 import scripts.dia
+import scripts.band
 
 """
 # Comparing Oracles
@@ -15,7 +16,7 @@ Written by: Christopher Pondoc
 In order to dip my feet into the world of crypto and blockchain development, I decided to analyze different oracles
 within the space and compare relevant metrics, enabling me to gain comprehension through practical data science work.
 
-*Note: Streamlit data app may take a few seconds to load in data from testnet.*
+*Note: Streamlit data app may take a few seconds to load in data from Ethereum mainnet!*
 """
 
 """
@@ -45,7 +46,8 @@ Specifically, I decided to key in on the following conversions:
 * AMPL/USD
 * LTC/USD
 
-Below is a table of initial results.
+Below is a table of initial results. Note that for the Band Protocol, I had a bit of trouble communicating with their
+smart contract to get the values for AMPL and LTC, so I marked those as `-1`.
 """
 
 coins = ["BTC", "ETH", "AMPL", "LTC"] # Coins to look at!
@@ -75,6 +77,13 @@ dia_data = ['DIA']
 for i in range(0, len(coins)):
     dia_data.append(scripts.dia.return_price(coins[i]))
 oracles.loc[len(oracles.index)] = dia_data
+
+# Getting data for Band Protocol
+band_contract = scripts.band.get_contract()
+band_data = ['Band']
+for i in range(0, len(coins) - 2):
+    band_data.append(scripts.band.return_prices(band_contract, coins[i]))
+oracles.loc[len(oracles.index)] = band_data + [-1, -1]
 
 # Display data as a table
 oracles

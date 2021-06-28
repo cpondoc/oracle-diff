@@ -36,6 +36,13 @@ def find_values(contract):
          print("Exchange Rate: " + str(value/granularity))
          print('\n')
 
+"""
+Function: return_prices
+This function returns prices for given coins
+"""
+def return_prices(contract, coin):
+   return contract.functions.getReferenceData(coin, 'USD').call()[0] / granularity
+
 """ 
 Function: main
 Runs all helper functions by setting up contract, grabbing values, and printing.
@@ -43,5 +50,3 @@ Runs all helper functions by setting up contract, grabbing values, and printing.
 if __name__ == "__main__":
     contract = get_contract()
     find_values(contract)
-    #[value, block, quote] = contract.functions.getReferenceData('BTC', 'USD').call()
-    #print(value / granularity)
