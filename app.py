@@ -28,6 +28,7 @@ within the space and compare relevant metrics, enabling me to gain comprehension
 """
 
 """
+***
 ## Background
 Oracles help bring data from the outside world onto the blockchain, which help smart contracts make decisions/dispense money/perform 
 a plethora of tasks [1]. The data we'll be focusing on comes in the form on **conversion rates**, such as BTC/USD or BTC/ETH.
@@ -41,6 +42,7 @@ In the case of this task, we'll be focusing on the following oracles:
 """
 
 """ 
+***
 ## Grabbing Data
 The first step is to grab pertinent data from each of the oracles. In this case, I first decided 
 
@@ -78,6 +80,7 @@ oracles.loc[len(oracles.index)] = ['Tellor'] + scripts.tellor.grab_feeds(tellor_
 
 # Getting data for Dia
 dia_data = ['DIA']
+dia_contract = scripts.dia.get_contract()
 for i in range(0, len(coins)):
     dia_data.append(scripts.dia.return_price(coins[i]))
 oracles.loc[len(oracles.index)] = dia_data
@@ -93,6 +96,7 @@ oracles.loc[len(oracles.index)] = band_data + [-1, -1]
 oracles
 
 """
+***
 ### Change in Exchange Rate over Time
 The next metric I decided to look at was the change in value over time of a certain exchange. Specifically,
 I looked at the last 50 values of each exchange, and then compared over each exchange. See the line chart for
@@ -119,6 +123,7 @@ for coin in coins:
     st.line_chart(np.transpose(coin_prices))
 
 """
+***
 ### Average Time Between Each Request
 Next, I decided to investigate the time that it took to satisfy each request. When looking at networks
 like Tellor, due to the economics of the token, time between each request is not a pertinent 
@@ -159,6 +164,7 @@ for i in range(0, len(coins)):
     st.line_chart(np.transpose(coin_times))
 
 """
+***
 ### Gas Prices
 The final metric I decided to investigate involved analyzing the gas estimates for calling certain functions
 from each oracle's smart contract. Specifically, I focused on looking at the amount of gas required to pull a specific
@@ -167,18 +173,22 @@ value from the chain, as well as how that value changed for each exchange.
 Key:
 * 0 - Tellor
 * 1 - Chainlink
+* 2 - DIA
 """
 
 # Grabbing all gas prices
 gas_prices = []
 gas_prices.append(scripts.tellor.grab_gas_estimate(tellor_contract, "BTC/USD"))
 gas_prices.append(scripts.chainlink.grab_gas_estimate("BTC/USD"))
+gas_prices.append(scripts.dia.grab_gas_estimate(dia_contract, "Bitcoin"))
 st.markdown("** Graph of Gas Estimates for Grabbing Current Value **")
 st.text('Average Gas Price for Single Value Request for Tellor: ' + str(gas_prices[0]) + ' Gwei')
 st.text('Average Gas Price for Single Value Request for Chainlink: ' + str(gas_prices[1]) + ' Gwei')
+st.text('Average Gas Price for Single Value Request for DIA: ' + str(gas_prices[2]) + ' Gwei')
 st.bar_chart((gas_prices))
 
 """
+***
 ## Works Cited
 [1] https://www.coindesk.com/what-is-an-oracle
 

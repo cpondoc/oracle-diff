@@ -32,8 +32,8 @@ def find_values(contract):
    for base in bases:
       for convert in converts:
          print("Convert " + base + " to " + convert)
-         [value, block, quote] = contract.functions.getReferenceData(base, convert).call()
-         print("Exchange Rate: " + str(value/granularity))
+         band_data = contract.functions.getReferenceData(base, convert).call()
+         print("Exchange Rate: " + str(band_data[0]/granularity))
          print('\n')
 
 """
