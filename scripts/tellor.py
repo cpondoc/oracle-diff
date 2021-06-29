@@ -16,7 +16,7 @@ Function: set_up_contract()
 Accesses the Tellor ABI, connects to the Tellor contract, and returns to use
 """
 def set_up_contract():
-    f = open('contracts/tellorLens.json',)
+    f = open('contracts/tellorLens.json', 'r')
     abi = json.load(f)
     web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
     address = '0xb2b6c6232d38fae21656703cac5a74e5314741d4'

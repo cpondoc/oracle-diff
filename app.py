@@ -48,7 +48,7 @@ In the case of this task, we'll be focusing on the following oracles:
 
 """ 
 ***
-## 💻 Grabbing Data
+## 💻  Process
 The first step is to grab pertinent data from each of the oracles. In this case, I followed a specific process:
 
 
@@ -59,9 +59,28 @@ the address to their smart contract through the documentation on their website.
 Interface, or ABI. Since smart contracts are stored and compiled in the blockchain as bytecode, in order to communicate with a smart
 contract, we must use an ABI to determine which functions I can invoke as well as what format data will be returned to me.
 
-3. Finally, using web3.py, I was able to connect each of the project's smart contract, invoke the proper arguments, and then calculate
+3. Finally, using `web3.py`, I was able to connect each of the project's smart contract, invoke the proper arguments, and then calculate
 the metrics accordingly.
 
+Below is a code sample that can be used as a template for connecting to a smart contract using `web3.py`. More code samples can be found
+in the `scripts` folder in the main repository:
+
+```
+from web3 import Web3
+import json
+
+f = open('path/to/abi', 'r')
+abi = json.load(f)
+web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/PROJECT_URL'))
+address = 'CONTRACT_ADDRESS'
+f.close()
+return web3.eth.contract(address=address, abi=abi)
+```
+
+"""
+"""
+***
+## Data Analysis
 ### 💵 Price Feeds
 The first data I looked at were simply the pure price feeds, mainly focusing on conversions between certain large cryptocurrencies.
 
@@ -110,7 +129,7 @@ for i in range(0, len(coins) - 2):
 oracles.loc[len(oracles.index)] = band_data + [-1, -1]
 
 # Display data as a table
-oracles
+st.table(oracles)
 
 """
 ***
@@ -144,15 +163,15 @@ for coin in coins:
 
 """
 ***
-### Average Time Between Each Request
-Next, I decided to investigate the time that it took to satisfy each request. When looking at networks
-like Tellor, due to the economics of the token, time between each request is not a pertinent 
+### ⏱ Average Time Between Each Request
+Next, I decided to investigate the time that it took to satisfy each request for the updated value of a price
+feed. Between requests, I would calculate the time difference between the Unix timestamps of when the value was previously
+updated to when the next requested was started.
 """
 
 """
-#### Tellor
-This graph takes a look at a couple of different requests for different conversions. The horizontal
-axis represents request number while the vertical axis represents number of seconds.
+#### Time Graph
+The horizontal axis represents request number while the vertical axis represents number of seconds.
 
 Key:
 * 0 - Tellor
@@ -160,7 +179,9 @@ Key:
 
 Average amount of time (in seconds): 
 """
-    
+
+tellor_btc_times = []
+chainlink_btc_times = []    
 coin_times = np.zeros((2, 50)) # To store data
 averages = [0, 0] # To look at coin averages
 
@@ -170,6 +191,11 @@ for i in range(0, len(coins)):
     # Grab time changes
     tellor_times = scripts.tellor.grab_time_change(tellor_contract, coins[i] + "/USD")
     chainlink_times = scripts.chainlink.grab_time_change(coins[i] + "/USD")
+
+    # Save BTC times for future reference
+    if (i  == 0):
+        tellor_btc_times = tellor_times
+        chainlink_btc_times = chainlink_times
 
     # Update stacked array and avearges
     coin_times[0] = tellor_times
@@ -182,6 +208,29 @@ for i in range(0, len(coins)):
     st.text('Average time in between each request for Tellor: ' + str(averages[0]) + ' seconds')
     st.text('Average time in between each request for Chainlink: ' + str(averages[1]) + ' seconds')
     st.line_chart(np.transpose(coin_times))
+
+"""
+#### Histogram of Time
+Note that due the economics of tokens like Tellor, looking at absolute speed is not the most important metric. If anything, a lack of erraticness + a commitment to 
+consistency is much more consequential. Thus, in addition to looking at time per request over time + averages, one could also plot the distribution as a histogram
+and analyze the standard deviation.
+"""
+
+# Histogram + Standard Deviation for Tellor
+"""
+#### Tellor
+"""
+st.text("Standard Deviation of Tellor times: " + str(np.std(tellor_btc_times)) + " seconds")
+tellor_btc_histogram = np.histogram(tellor_btc_times, bins=15)[0]
+st.bar_chart(tellor_btc_histogram)
+
+# Histogram + Standard Deviation for Chainlink
+"""
+#### Chainlink
+"""
+st.text("Standard Deviation of Chainlink times: " + str(np.std(chainlink_btc_times)) + " seconds")
+chainlink_btc_histogram = np.histogram(chainlink_btc_times, bins=15)[0]
+st.bar_chart(chainlink_btc_histogram)
 
 """
 ***
