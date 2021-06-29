@@ -30,7 +30,7 @@ the world of crypto more practically.
 
 """
 ***
-## Background
+## 📚 Background
 Developing on the blockchain starts with smart contracts, which are self-operating computer programs, which live on the blockchain and execute
 when a certain amount of conditions are met [2]. Despite the many advantages of smart contracts, one limiting factor is the inability to get data from
 outside of the blockchain onto the blockchain. Such data can include information about the weather, random numbers, or price feeds of different currencies.
@@ -48,17 +48,21 @@ In the case of this task, we'll be focusing on the following oracles:
 
 """ 
 ***
-## Grabbing Data
+## 💻 Grabbing Data
 The first step is to grab pertinent data from each of the oracles. In this case, I followed a specific process:
+
+
 1. First, I found the address of each oracle's smart contract on the blockchain. For the most part, all the oracles provided
 the address to their smart contract through the documentation on their website.
+
 2. After finding the addresses of each smart contract, I went to etherscan.io, and downloaded each contract's Application Binary
 Interface, or ABI. Since smart contracts are stored and compiled in the blockchain as bytecode, in order to communicate with a smart
 contract, we must use an ABI to determine which functions I can invoke as well as what format data will be returned to me.
+
 3. Finally, using web3.py, I was able to connect each of the project's smart contract, invoke the proper arguments, and then calculate
 the metrics accordingly.
 
-### Price Feeds
+### 💵 Price Feeds
 The first data I looked at were simply the pure price feeds, mainly focusing on conversions between certain large cryptocurrencies.
 
 Specifically, I decided to key in on the following conversions:
@@ -110,7 +114,7 @@ oracles
 
 """
 ***
-### Change in Price Feed over Time
+### 🏷 Change in Price Feed over Time
 The next metric I decided to look at was the change in value over time of a certain cryptocurrency. Due to the limitations
 of specific oracles and their smart contracts, I was able to grab historical data from only Tellor and Chainlink.
 
