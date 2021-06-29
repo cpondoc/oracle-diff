@@ -235,9 +235,12 @@ st.bar_chart(chainlink_btc_histogram)
 """
 ***
 ### Gas Prices
-The final metric I decided to investigate involved analyzing the gas estimates for calling certain functions
-from each oracle's smart contract. Specifically, I focused on looking at the amount of gas required to pull a specific
-value from the chain, as well as how that value changed for each exchange.
+The final metric I decided to investigate involved analyzing the gas estimates for retrieving data from each specific oracle.
+Simply put, gas refers to the cost needed in order to perform a transaction on a blockchain network. Transactions fees are
+equal to the product of the units of gas used and the price per unit. However, the units of gas is ultimately fixed.
+
+It's also important to note that the amount of gas required is also highly dependent on the amount of data being sent back
+from the smart contract and the function being called.
 
 Key:
 * 0 - Tellor
