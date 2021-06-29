@@ -49,11 +49,17 @@ In the case of this task, we'll be focusing on the following oracles:
 """ 
 ***
 ## Grabbing Data
-The first step is to grab pertinent data from each of the oracles. In this case, I first decided 
+The first step is to grab pertinent data from each of the oracles. In this case, I followed a specific process:
+1. First, I found the address of each oracle's smart contract on the blockchain. For the most part, all the oracles provided
+the address to their smart contract through the documentation on their website.
+2. After finding the addresses of each smart contract, I went to etherscan.io, and downloaded each contract's Application Binary
+Interface, or ABI. Since smart contracts are stored and compiled in the blockchain as bytecode, in order to communicate with a smart
+contract, we must use an ABI to determine which functions I can invoke as well as what format data will be returned to me.
+3. Finally, using web3.py, I was able to connect each of the project's smart contract, invoke the proper arguments, and then calculate
+the metrics accordingly.
 
-### Conversion Rates
-The first data I looked at were simply the pure conversion rates. For this, I simply pulled the data from each
-of the smart contracts using their Application Binary Interface (ABI), as well as `web3.py`.
+### Price Feeds
+The first data I looked at were simply the pure price feeds, mainly focusing on conversions between certain large cryptocurrencies.
 
 Specifically, I decided to key in on the following conversions:
 * BTC/USD
@@ -104,10 +110,13 @@ oracles
 
 """
 ***
-### Change in Exchange Rate over Time
-The next metric I decided to look at was the change in value over time of a certain exchange. Specifically,
-I looked at the last 50 values of each exchange, and then compared over each exchange. See the line chart for
-each exchange, as well as for each protocol, below.
+### Change in Price Feed over Time
+The next metric I decided to look at was the change in value over time of a certain cryptocurrency. Due to the limitations
+of specific oracles and their smart contracts, I was able to grab historical data from only Tellor and Chainlink.
+
+As a general methodology, I first grabbed the latest request for a value for each price feed. For both Tellor and Chainlink,
+the respective functions from the respective ABIs returned round IDs. Thus, by subtracting 1 for each previous round, I was able
+to iterate over the previous 50 rounds by grabbing the value of a price feed at a specific ID or timestamp.
 
 Key:
 * 0 - Tellor
