@@ -21,8 +21,9 @@ st.set_page_config(
 # 🔮 Comparing Oracles
 Written by: Christopher Pondoc
 
-In order to dip my feet into the world of crypto and blockchain development, I decided to analyze different oracles
-within the space and compare relevant metrics, enabling me to gain comprehension through practical data science work.
+This project analyzes different oracles within the world of blockchain development through a data science lens.
+By observing and comparing various relevant metrics of oracles, I was able to gain some reasonable comprehension about
+the world of crypto more practically.
 
 *Note: Streamlit data app may take a few seconds to load in data from Ethereum Mainnet!*
 """
@@ -30,8 +31,12 @@ within the space and compare relevant metrics, enabling me to gain comprehension
 """
 ***
 ## Background
-Oracles help bring data from the outside world onto the blockchain, which help smart contracts make decisions/dispense money/perform 
-a plethora of tasks [1]. The data we'll be focusing on comes in the form on **conversion rates**, such as BTC/USD or BTC/ETH.
+Developing on the blockchain starts with smart contracts, which are self-operating computer programs, which live on the blockchain and execute
+when a certain amount of conditions are met [2]. Despite the many advantages of smart contracts, one limiting factor is the inability to get data from
+outside of the blockchain onto the blockchain. Such data can include information about the weather, random numbers, or price feeds of different currencies.
+
+This is where oracles come in: these mechanisms help to retrieve data from off the blockchain for smart contracts to use for dispensing money, making decisions,
+and more [1]. In this specific report, we'll be looking at oracles and price feed data, and understanding how different oracles perform compared to one another.
 
 ### Specific Oracles
 In the case of this task, we'll be focusing on the following oracles:
