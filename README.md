@@ -13,7 +13,14 @@ Maintained by: Chris Pondoc
 ## Run
 To run the app, simply install `requirements.txt` and then run `streamlit run app.py`.
 
-## Conversions
+## Analysis
+This report analyzes the following oracles:
+* Tellor
+* Chainlink
+* Band Protocol
+* DIA
+
+The report also looked at the following conversions:
 * BTC/USD
 * ETH/USD
 * AMPL/USD
