@@ -2,6 +2,9 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import altair as alt
+from altair.expr import datum
+
 
 # Importing scripts from individual oracles
 import scripts.chainlink
@@ -28,17 +31,25 @@ the world of crypto more practically.
 *Note: Streamlit data app may take a few seconds to load in data from Ethereum Mainnet!*
 """
 
+df = pd.DataFrame(
+    np.random.randn(200, 3),
+    columns=['a', 'b', 'c'])
+
+c = alt.Chart(df).mark_circle().encode(
+    x='a', y='b', size='c', color='c', tooltip=['a', 'b', 'c'])
+st.altair_chart(c, use_container_width=True)
+
 """
 ***
-## 📚 Background
+## 📚 **Background**
 Developing on the blockchain starts with smart contracts, which are self-operating computer programs, which live on the blockchain and execute
 when a certain amount of conditions are met [1]. Despite the many advantages of smart contracts, one limiting factor is the inability to get data from
 outside of the blockchain onto the blockchain. Such data can include information about the weather, random numbers, or price feeds of different currencies.
 
 This is where oracles come in: these mechanisms help to retrieve data from off the blockchain for smart contracts to use for dispensing money, making decisions,
-and more [2]. In this specific report, we'll be looking at oracles and price feed data, and understanding how different oracles perform compared to one another.
+and more [2]. In this specific report, we'll be looking at oracles and price feed                        data, and u                         nderstanding how different oracles perform compared to one another.
 
-### Specific Oracles
+### **Specific Oracles**
 In the case of this task, we'll be focusing on the following oracles:
 * Tellor [3]
 * Chainlink [4]
@@ -48,7 +59,7 @@ In the case of this task, we'll be focusing on the following oracles:
 
 """ 
 ***
-## 💻  Process
+## 💻  **Process**
 The first step is to grab pertinent data from each of the oracles. In this case, I followed a specific process:
 
 
@@ -80,8 +91,8 @@ return web3.eth.contract(address=address, abi=abi)
 """
 """
 ***
-## Data Analysis
-### 💵 Price Feeds
+## 📊 **Data Analysis**
+### 💵 **Price Feeds**
 The first data I looked at were simply the pure price feeds, mainly focusing on conversions between certain large cryptocurrencies.
 
 Specifically, I decided to key in on the following conversions:
@@ -131,7 +142,7 @@ st.table(oracles)
 
 """
 ***
-### 🏷 Change in Price Feed over Time
+### 🏷 **Change in Price Feed over Time**
 The next metric I decided to look at was the change in value over time of a certain cryptocurrency. Due to the limitations
 of specific oracles and their smart contracts, I was able to grab historical data from only Tellor and Chainlink.
 
@@ -148,16 +159,18 @@ Key:
 #### Note: Horizontal Axis is Request #, Vertical Axis is Price
 """
 
-coin_prices = np.zeros((2, 51)) # To store data
+coin_prices = range(1, 52)
 
 # Loop for each protocol
 for coin in coins:
     tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, coin + "/USD")
     chainlink_btc_prices = scripts.chainlink.grab_price_change(coin + "/USD")
-    coin_prices[0] = tellor_btc_prices
-    coin_prices[1] = chainlink_btc_prices
     st.markdown('** Graph of Value of ' + coin + ' **')
-    st.line_chart(np.transpose(coin_prices))
+    coin_df = pd.DataFrame({
+        'Tellor': tellor_btc_prices,
+        'Chainlink': chainlink_btc_prices
+    })
+    st.line_chart(coin_df)
 
 """
 ***
