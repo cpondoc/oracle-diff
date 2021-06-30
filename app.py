@@ -2,9 +2,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import altair as alt
-from altair.expr import datum
-
 
 # Importing scripts from individual oracles
 import scripts.chainlink
@@ -22,7 +19,7 @@ st.set_page_config(
 
 """
 # 🔮 Comparing Oracles
-Written by: Christopher Pondoc
+👨🏽‍💻 Written by: Christopher Pondoc
 
 This project analyzes different oracles within the world of blockchain development through a data science lens.
 By observing and comparing various relevant metrics of oracles, I was able to gain some reasonable comprehension about
@@ -30,14 +27,6 @@ the world of crypto more practically.
 
 *Note: Streamlit data app may take a few seconds to load in data from Ethereum Mainnet!*
 """
-
-df = pd.DataFrame(
-    np.random.randn(200, 3),
-    columns=['a', 'b', 'c'])
-
-c = alt.Chart(df).mark_circle().encode(
-    x='a', y='b', size='c', color='c', tooltip=['a', 'b', 'c'])
-st.altair_chart(c, use_container_width=True)
 
 """
 ***
@@ -100,6 +89,12 @@ Specifically, I decided to key in on the following conversions:
 * ETH/USD
 * AMPL/USD
 
+For each oracle, I utilizes the below functions from their ABIs:
+* Tellor: `getCurrentValue(uint256 _requestId)`
+* Chainlink: `latestRoundData()`
+* Band Protocol: `getReferenceData(string _base, string _quote)`
+* DIA: `getCoinInfo(string name)`
+
 Below is a table of initial results. Note that for the Band Protocol, I had a bit of trouble communicating with their
 smart contract to get the values for AMPL, so I marked it as `-1`.
 """
@@ -150,13 +145,12 @@ As a general methodology, I first grabbed the latest request for a value for eac
 the respective functions from the respective ABIs returned round IDs. Thus, by subtracting 1 for each previous round, I was able
 to iterate over the previous 50 rounds by grabbing the value of a price feed at a specific ID or timestamp.
 
-Key:
-* 0 - Tellor
-* 1 - Chainlink
-"""
+Below are the functions I utilized from each ABI:
+* Tellor: `getDataBefore(uint256 _requestId, uint256 _timestamp)`
+* Chainlink: `getRoundData(uint80 _roundId)`
 
-"""
-#### Note: Horizontal Axis is Request #, Vertical Axis is Price
+*Note: Horizontal Axis is Request #, Vertical Axis is Price in USD*
+
 """
 
 coin_prices = range(1, 52)
@@ -174,21 +168,12 @@ for coin in coins:
 
 """
 ***
-### ⏱ Average Time Between Each Requests
+### ⏱ **Average Time Between Each Request**
 Next, I decided to investigate the time that it took to satisfy each request for the updated value of a price
 feed. Between requests, I would calculate the time difference between the Unix timestamps of when the value was previously
 updated to when the next requested was started.
-"""
 
-"""
-#### Time Graph
-The horizontal axis represents request number while the vertical axis represents number of seconds.
-
-Key:
-* 0 - Tellor
-* 1 - Chainlink
-
-Average amount of time (in seconds): 
+*Note: Horizontal Axis is Request #, Vertical Axis is Time in Seconds*
 """
 
 tellor_btc_times = []
@@ -209,8 +194,10 @@ for i in range(0, len(coins)):
         chainlink_btc_times = chainlink_times
 
     # Update stacked array and avearges
-    coin_times[0] = tellor_times
-    coin_times[1] = chainlink_times
+    coin_times = pd.DataFrame({
+        'Tellor': tellor_times,
+        'Chainlink': chainlink_times
+    })
     averages[0] = np.average(tellor_times)
     averages[1] = np.average(chainlink_times)
 
@@ -218,10 +205,11 @@ for i in range(0, len(coins)):
     st.markdown('** Graph of time in between requests of ' + coins[i] + ' **')
     st.text('Average time in between each request for Tellor: ' + str(averages[0]) + ' seconds')
     st.text('Average time in between each request for Chainlink: ' + str(averages[1]) + ' seconds')
-    st.line_chart(np.transpose(coin_times))
+    st.line_chart(coin_times)
 
 """
-#### Histogram of Time
+***
+### 📈 **Histogram of Time**
 Note that due the economics of tokens like Tellor, looking at absolute speed is not the most important metric. If anything, a lack of erraticness + a commitment to 
 consistency is much more consequential. Thus, in addition to looking at time per request over time + averages, one could also plot the distribution as a histogram
 and analyze the standard deviation.
@@ -245,10 +233,11 @@ st.bar_chart(chainlink_btc_histogram)
 
 """
 ***
-### Gas Prices
+### ⛽️ **Gas Prices**
 The final metric I decided to investigate involved analyzing the gas estimates for retrieving data from each specific oracle.
 Simply put, gas refers to the cost needed in order to perform a transaction on a blockchain network. Transactions fees are
-equal to the product of the units of gas used and the price per unit. However, the units of gas is ultimately fixed [11].
+equal to the product of the units of gas used and the price per unit. However, the units of gas is ultimately fixed [11]. In order
+to calculate each gas price, I utilized the `estimate_gas()` function within `web3.py`.
 
 It's also important to note that the amount of gas required is also highly dependent on the amount of data being sent back
 from the smart contract and the function being called.
