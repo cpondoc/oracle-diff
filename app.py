@@ -32,18 +32,18 @@ the world of crypto more practically.
 ***
 ## 📚 Background
 Developing on the blockchain starts with smart contracts, which are self-operating computer programs, which live on the blockchain and execute
-when a certain amount of conditions are met [2]. Despite the many advantages of smart contracts, one limiting factor is the inability to get data from
+when a certain amount of conditions are met [1]. Despite the many advantages of smart contracts, one limiting factor is the inability to get data from
 outside of the blockchain onto the blockchain. Such data can include information about the weather, random numbers, or price feeds of different currencies.
 
 This is where oracles come in: these mechanisms help to retrieve data from off the blockchain for smart contracts to use for dispensing money, making decisions,
-and more [1]. In this specific report, we'll be looking at oracles and price feed data, and understanding how different oracles perform compared to one another.
+and more [2]. In this specific report, we'll be looking at oracles and price feed data, and understanding how different oracles perform compared to one another.
 
 ### Specific Oracles
 In the case of this task, we'll be focusing on the following oracles:
-* Tellor [2]
-* Chainlink [3]
-* Band Protocol [4]
-* DIA [5]
+* Tellor [3]
+* Chainlink [4]
+* Band Protocol [5]
+* DIA [6]
 """
 
 """ 
@@ -55,15 +55,15 @@ The first step is to grab pertinent data from each of the oracles. In this case,
 1. First, I found the address of each oracle's smart contract on the blockchain. For the most part, all the oracles provided
 the address to their smart contract through the documentation on their website.
 
-2. After finding the addresses of each smart contract, I went to etherscan.io, and downloaded each contract's Application Binary
-Interface, or ABI. Since smart contracts are stored and compiled in the blockchain as bytecode, in order to communicate with a smart
-contract, we must use an ABI to determine which functions I can invoke as well as what format data will be returned to me.
+2. After finding the addresses of each smart contract, I went to EtherScan, and downloaded each contract's Application Binary
+Interface, or ABI [7]. Since smart contracts are stored and compiled in the blockchain as bytecode, in order to communicate with a smart
+contract, we must use an ABI to determine which functions I can invoke as well as what format data will be returned to me [8].
 
 3. Finally, using `web3.py`, I was able to connect each of the project's smart contract, invoke the proper arguments, and then calculate
-the metrics accordingly.
+the metrics accordingly [9].
 
 Below is a code sample that can be used as a template for connecting to a smart contract using `web3.py`. More code samples can be found
-in the `scripts` folder in the main repository:
+in the `scripts` folder in the main repository [10]:
 
 ```
 from web3 import Web3
@@ -88,14 +88,13 @@ Specifically, I decided to key in on the following conversions:
 * BTC/USD
 * ETH/USD
 * AMPL/USD
-* LTC/USD
 
 Below is a table of initial results. Note that for the Band Protocol, I had a bit of trouble communicating with their
-smart contract to get the values for AMPL and LTC, so I marked those as `-1`.
+smart contract to get the values for AMPL, so I marked it as `-1`.
 """
 
 # Coins and oracles to look at!
-coins = ["BTC", "ETH", "AMPL", "LTC"]
+coins = ["BTC", "ETH", "AMPL"]
 oracle_names = ["Tellor", "Chainlink", "Band Protocol", "DIA"]
 
 # Dataframe for the Oracle
@@ -104,7 +103,6 @@ oracles = pd.DataFrame({
     'BTC/USD': [],
     'ETH/USD': [],
     'AMPL/USD': [],
-    'LTC/USD': []
 })
 
 # Getting data for Chainlink
@@ -124,9 +122,9 @@ oracles.loc[len(oracles.index)] = dia_data
 # Getting data for Band Protocol
 band_contract = scripts.band.get_contract()
 band_data = ['Band']
-for i in range(0, len(coins) - 2):
+for i in range(0, len(coins) - 1):
     band_data.append(scripts.band.return_prices(band_contract, coins[i]))
-oracles.loc[len(oracles.index)] = band_data + [-1, -1]
+oracles.loc[len(oracles.index)] = band_data + [-1]
 
 # Display data as a table
 st.table(oracles)
@@ -237,7 +235,7 @@ st.bar_chart(chainlink_btc_histogram)
 ### Gas Prices
 The final metric I decided to investigate involved analyzing the gas estimates for retrieving data from each specific oracle.
 Simply put, gas refers to the cost needed in order to perform a transaction on a blockchain network. Transactions fees are
-equal to the product of the units of gas used and the price per unit. However, the units of gas is ultimately fixed.
+equal to the product of the units of gas used and the price per unit. However, the units of gas is ultimately fixed [11].
 
 It's also important to note that the amount of gas required is also highly dependent on the amount of data being sent back
 from the smart contract and the function being called.
@@ -265,13 +263,25 @@ st.bar_chart((gas_prices))
 """
 ***
 ## Works Cited
-[1] https://www.coindesk.com/what-is-an-oracle
+[1] https://medium.com/@teexofficial/what-are-oracles-smart-contracts-the-oracle-problem-911f16821b53
 
-[2] https://tellor.io/
+[2] https://www.coindesk.com/what-is-an-oracle
 
-[3] https://chain.link/
+[3] https://tellor.io/
 
-[4] https://bandprotocol.com/
+[4] https://chain.link/
 
-[5] https://diadata.org/
+[5] https://bandprotocol.com/
+
+[6] https://diadata.org/
+
+[7] https://etherscan.io/
+
+[8] https://www.youtube.com/watch?v=F_l4HycnHAI&t=42s
+
+[9] https://web3py.readthedocs.io/en/stable/index.html
+
+[10] https://github.com/cpondoc/oracle-diff
+
+[11] https://www.investopedia.com/terms/g/gas-ethereum.asp
 """

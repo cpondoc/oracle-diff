@@ -17,15 +17,6 @@ To run the app, simply install `requirements.txt` and then run `streamlit run ap
 * BTC/USD
 * ETH/USD
 * AMPL/USD
-* LTC/USD
 
 ## Notes
-Note that Band Protocol Network does not support AMPL or LTC, despite being listed as one of the available price data feeds.
-
-## Updates
-* 6/28 - Fixing up adding Chainlink, looking at change in time, and even adding in gas prices!
-* 6/25 - Weekend of 6/27: Finalized calculations for the Tellor oracle, made updates/decided on presentation for other oracles.
-* 6/24 - Data from just about every oracle is successfully being collected. Now need to consider a couple of other factors
-    * Quantities/metrics to calculate
-    * Unifying the logic
-    * Style + Modularization if necessary
+Note that Band Protocol Network does not support AMPL, despite being listed as one of the available price data feeds.

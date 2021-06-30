@@ -28,10 +28,6 @@ Function: get_chainlink_data
 This function gets the value of all Chainlink Data necessary for running stuff
 """
 def get_chainlink_data(name, address):
-    """web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
-    f = open('contracts/chainlink.json', 'r')
-    abi = json.load(f)
-    contract = web3.eth.contract(address=address, abi=abi)"""
     contract = get_contract(address)
     num_decimals = contract.functions.decimals().call()
     latestData = contract.functions.latestRoundData().call()

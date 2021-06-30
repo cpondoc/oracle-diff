@@ -7,8 +7,5 @@
     },
     "AMPL/USD": {
         "address": "0xe20CA8D7546932360e37E9D72c1a47334af57706"
-    },
-    "LTC/USD": {
-        "address": "0x6AF09DF7563C363B5763b9102712EbeD3b9e859B"
     }
 }
