@@ -174,7 +174,7 @@ for coin in coins:
 
 """
 ***
-### ⏱ Average Time Between Each Request
+### ⏱ Average Time Between Each Requests
 Next, I decided to investigate the time that it took to satisfy each request for the updated value of a price
 feed. Between requests, I would calculate the time difference between the Unix timestamps of when the value was previously
 updated to when the next requested was started.
