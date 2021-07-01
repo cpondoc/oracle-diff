@@ -12,13 +12,16 @@ import math
 """ Constants """
 num_vals = 100 # Number of past values to grab for looking at history
 
-""" Used to help calculate the actual conversion rate from the raw number
-on the blockchain """
+""" 
+Function: calculate_price()
+Used to help calculate the actual conversion rate from the raw number
+on the blockchain
+"""
 def calculate_price(price, decimals):
     return float(price) / (10 ** decimals)
 
 """
-Function: get_contract
+Function: get_contract()
 Get the contract for a specific exchange for Chainlink
 """
 def get_contract(address):
@@ -28,7 +31,7 @@ def get_contract(address):
     return web3.eth.contract(address=address, abi=abi)
 
 """ 
-Function: get_chainlink_data
+Function: get_chainlink_data()
 This function gets the value of all Chainlink Data necessary for running stuff
 """
 def get_chainlink_data(name, address):
@@ -39,7 +42,7 @@ def get_chainlink_data(name, address):
     return latestData
 
 """ 
-Function: grab_feeds
+Function: grab_feeds()
 This function grabs all of the existing data feeds, and then parses the JSON
 to get all of the addresses
 """
@@ -53,7 +56,7 @@ def grab_feeds():
     return prices
 
 """
-Function: grab_round
+Function: grab_round()
 Get data from a specific round
 """
 def grab_round(elem, address, roundId):
@@ -65,7 +68,7 @@ def grab_round(elem, address, roundId):
     return latestData
 
 """ 
-Function: grab_price_change
+Function: grab_price_change()
 Grab last 50 rounds of chainlink data for a specific exchange
  """
 def grab_price_change(exchange):
@@ -80,7 +83,7 @@ def grab_price_change(exchange):
     return all_prices[::-1]
 
 """
-Function: grab_price_change()
+Function: get_better_price()
 Get the change in price over a certain amount of time!
 """
 def get_better_price(exchange, number_values):
@@ -100,11 +103,9 @@ def get_better_price(exchange, number_values):
     last_offset = abs(len(all_prices) - number_values)
     all_prices = all_prices[last_offset:]
     return all_prices
-
-
   
 """
-Function: grab_time_change
+Function: grab_time_change()
 Grab the time in between each request for last 50 rounds of chainlink data for an exchange
 """
 def grab_time_change(exchange):
@@ -124,7 +125,7 @@ def grab_time_change(exchange):
     return all_diffs[::-1]
 
 """
-Function: grab_gas_estimate
+Function: grab_gas_estimate()
 Grabs the gas estimate for getting the latest value of an exchange
 """
 def grab_gas_estimate(id_name):
@@ -138,7 +139,7 @@ def grab_gas_estimate(id_name):
     return (contract.functions.latestRoundData().estimateGas())
 
 """ 
-Function: print_info
+Function: print_info()
 Prints out the info for the user
 """
 def print_info(name, roundId, answer, startedAt, updatedAt, answeredInRound, decimals):

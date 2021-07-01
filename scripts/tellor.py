@@ -38,8 +38,6 @@ def grab_feeds():
         id_num = int(data[elem]['id'])
         [worked, value, timestamp] = (contract.functions.getCurrentValue(id_num).call())
         prices.append(value/granularity)
-        #for i in range(0, 50):
-            #[worked, value, timestamp] = (contract.functions.getDataBefore(id_num, timestamp).call())
     return prices
 
 """
@@ -60,7 +58,7 @@ def grab_price_change(contractz, id_name):
     return all_prices[::-1]
 
 """
-Function: grab_price_change()
+Function: get_better_price()
 Get the change in price over a certain amount of time!
 """
 def get_better_price(id_name, number_values):
