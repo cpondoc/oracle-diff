@@ -121,13 +121,11 @@ oracles.loc[len(oracles.index)] = ['Tellor'] + scripts.tellor.grab_feeds()
 
 # Getting data for Dia
 dia_data = ['DIA']
-dia_contract = scripts.dia.get_contract()
 for i in range(0, len(coins)):
     dia_data.append(scripts.dia.return_price(coins[i]))
 oracles.loc[len(oracles.index)] = dia_data
 
 # Getting data for Band Protocol
-band_contract = scripts.band.get_contract()
 band_data = ['Band']
 for i in range(0, len(coins) - 1):
     band_data.append(scripts.band.return_prices(coins[i]))
