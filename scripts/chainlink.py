@@ -79,6 +79,10 @@ def grab_price_change(exchange):
             all_prices.append(calculate_price(answer, decimals))
     return all_prices[::-1]
 
+"""
+Function: grab_price_change()
+Get the change in price over a certain amount of time!
+"""
 def get_better_price(exchange, number_values):
     all_prices = []
     with open('feeds/chainlink.json') as f:

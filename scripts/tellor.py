@@ -59,7 +59,10 @@ def grab_price_change(contractz, id_name):
         all_prices.append(value/granularity)
     return all_prices[::-1]
 
-
+"""
+Function: grab_price_change()
+Get the change in price over a certain amount of time!
+"""
 def get_better_price(id_name, number_values):
     contract = set_up_contract()
     all_prices = []
