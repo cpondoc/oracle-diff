@@ -109,10 +109,10 @@ def grab_time_change(exchange):
     new_timestamp = datetime.now()
     with open('feeds/chainlink.json') as f:
         data = json.load(f)
-    [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
+    [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(str(exchange), data[str(exchange)]['address'])
     new_timestamp = datetime.utcfromtimestamp(updatedAt)
-    for i in range(0, num_vals):
-            [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
+    for i in range(0, 50):
+            [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(str(exchange), data[str(exchange)]['address'], roundId - 1)
             old_timestamp = datetime.utcfromtimestamp(updatedAt)
             time_diff = new_timestamp - old_timestamp
             all_diffs.append(time_diff.seconds)

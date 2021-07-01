@@ -61,16 +61,16 @@ def grab_price_change(contractz, id_name):
 
 
 def get_better_price(id_name, number_values):
-    tellor_contract = set_up_contract()
+    contract = set_up_contract()
     all_prices = []
     with open('feeds/tellor.json') as f:
         data = json.load(f)
     id_num = int(data[id_name]['id'])
     old_date = datetime.timestamp(datetime.now() - timedelta(days=5))
-    initial_data = tellor_contract.functions.getCurrentValue(id_num).call()
+    initial_data = contract.functions.getCurrentValue(id_num).call()
     all_prices.append(initial_data[1] / granularity)
     while (old_date < initial_data[2]):
-        initial_data = tellor_contract.functions.getDataBefore(id_num, initial_data[2]).call()
+        initial_data = contract.functions.getDataBefore(id_num, initial_data[2]).call()
         all_prices.append(initial_data[1] / granularity)
     round_factor = math.floor(len(all_prices) / number_values)
     if len(all_prices) < number_values:
@@ -84,13 +84,14 @@ def get_better_price(id_name, number_values):
 Function: grab_time_change()
 Get the change in update time over a certain amount of requests!
 """
-def grab_time_change(contract, id_name):
+def grab_time_change(id_name):
+    contract = set_up_contract()
     all_diffs = []
     old_timestamp = datetime.now()
     new_timestamp = datetime.now()
     with open('feeds/tellor.json') as f:
         data = json.load(f)
-    id_num = int(data[id_name]['id'])
+    id_num = int(data[str(id_name)]['id'])
     [worked, value, timestamp] = (contract.functions.getCurrentValue(id_num).call())
     new_timestamp = datetime.utcfromtimestamp(timestamp)
     for i in range(0, 50):
@@ -105,10 +106,11 @@ def grab_time_change(contract, id_name):
 Function: grab_gas_estimate()
 Estimate gas for retrieving data from the chain.
 """
-def grab_gas_estimate(contract, id_name):
+def grab_gas_estimate(id_name):
+    contract = set_up_contract()
     with open('feeds/tellor.json') as f:
         data = json.load(f)
-    id_num = int(data[id_name]['id'])
+    id_num = int(data[str(id_name)]['id'])
     return (contract.functions.getCurrentValue(id_num).estimateGas())
 
 

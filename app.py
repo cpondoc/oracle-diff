@@ -130,7 +130,7 @@ oracles.loc[len(oracles.index)] = dia_data
 band_contract = scripts.band.get_contract()
 band_data = ['Band']
 for i in range(0, len(coins) - 1):
-    band_data.append(scripts.band.return_prices(band_contract, coins[i]))
+    band_data.append(scripts.band.return_prices(coins[i]))
 oracles.loc[len(oracles.index)] = band_data + [-1]
 
 # Display data as a table
@@ -175,6 +175,7 @@ updated to when the next requested was started.
 *Note: Horizontal Axis is Request #, Vertical Axis is Time in Seconds*
 """
 
+# Arrays for two important times to be analyzed
 tellor_btc_times = []
 chainlink_btc_times = []    
 coin_times = np.zeros((2, 50)) # To store data
@@ -184,7 +185,7 @@ averages = [0, 0] # To look at coin averages
 for i in range(0, len(coins)):
 
     # Grab time changes
-    tellor_times = scripts.tellor.grab_time_change(tellor_contract, coins[i] + "/USD")
+    tellor_times = scripts.tellor.grab_time_change(str(coins[i] + "/USD"))
     chainlink_times = scripts.chainlink.grab_time_change(coins[i] + "/USD")
 
     # Save BTC times for future reference
@@ -248,12 +249,12 @@ Key:
 * 3 - Band Protocol
 """
 
-# Grabbing all gas prices
+# Grabbing all gas prices for calling BTC!
 gas_prices = []
-gas_prices.append(scripts.tellor.grab_gas_estimate(tellor_contract, "BTC/USD"))
+gas_prices.append(scripts.tellor.grab_gas_estimate("BTC/USD"))
 gas_prices.append(scripts.chainlink.grab_gas_estimate("BTC/USD"))
-gas_prices.append(scripts.dia.grab_gas_estimate(dia_contract, "Bitcoin"))
-gas_prices.append(scripts.band.grab_gas_estimate(band_contract, "BTC"))
+gas_prices.append(scripts.dia.grab_gas_estimate("Bitcoin"))
+gas_prices.append(scripts.band.grab_gas_estimate("BTC"))
 st.markdown("** Graph of Gas Estimates for Grabbing Current Value **")
 
 # Print all results!

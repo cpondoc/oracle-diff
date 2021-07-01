@@ -40,15 +40,17 @@ def find_values(contract):
 Function: return_prices
 This function returns prices for given coins
 """
-def return_prices(contract, coin):
-   return contract.functions.getReferenceData(coin, 'USD').call()[0] / granularity
+def return_prices(coin):
+   contract = get_contract()
+   return contract.functions.getReferenceData(str(coin), 'USD').call()[0] / granularity
 
 """
 Function: grab_gas_estimate
 Gets the estimate of gas from pulling info from one data point from the oracle
 """
-def grab_gas_estimate(contract, coin_name):
-    return contract.functions.getReferenceData(coin_name, 'USD').estimateGas()
+def grab_gas_estimate(coin_name):
+   contract = get_contract()
+   return contract.functions.getReferenceData(str(coin_name), 'USD').estimateGas()
 
 """ 
 Function: main

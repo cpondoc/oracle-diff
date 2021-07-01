@@ -5,6 +5,7 @@ Note: Only takes in Bitcoin, Litecoin, and Ethereum through their ABI
 """
 
 """ Necessary Libraries """
+from scripts.tellor import set_up_contract
 import requests
 from web3 import Web3
 import json
@@ -51,8 +52,9 @@ def return_price(coin):
 Function: grab_gas_estimate
 Gets the estimate of gas from pulling info from one data point from the oracle
 """
-def grab_gas_estimate(contract, coin_name):
-    return contract.functions.getCoinInfo(coin_name).estimateGas()
+def grab_gas_estimate(coin_name):
+    contract = get_contract()
+    return contract.functions.getCoinInfo((coin_name)).estimateGas()
 
 """ 
 Function: main
