@@ -6,7 +6,11 @@ Retrieves necessary data and prices from Chainlink!
 """ Libraries necessary for development """
 from web3 import Web3
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+import math
+
+""" Constants """
+num_vals = 100 # Number of past values to grab for looking at history
 
 """ Used to help calculate the actual conversion rate from the raw number
 on the blockchain """
@@ -70,11 +74,31 @@ def grab_price_change(exchange):
         data = json.load(f)
     [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
     all_prices.append(calculate_price(answer, decimals))
-    for i in range(0, 50):
+    for i in range(0, num_vals - 1):
             [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
             all_prices.append(calculate_price(answer, decimals))
     return all_prices[::-1]
 
+def get_better_price(exchange, number_values):
+    all_prices = []
+    with open('feeds/chainlink.json') as f:
+        data = json.load(f)
+    old_date = datetime.timestamp(datetime.now() - timedelta(days=5))
+    [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
+    all_prices.append(calculate_price(answer, decimals))
+    while (old_date < startedAt):
+        [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
+        all_prices.append(calculate_price(answer, decimals))
+    round_factor = math.floor(len(all_prices) / number_values)
+    if len(all_prices) < number_values:
+        round_factor = number_values
+    all_prices = all_prices[::round_factor]
+    last_offset = abs(len(all_prices) - number_values)
+    all_prices = all_prices[last_offset:]
+    return all_prices
+
+
+  
 """
 Function: grab_time_change
 Grab the time in between each request for last 50 rounds of chainlink data for an exchange
@@ -87,7 +111,7 @@ def grab_time_change(exchange):
         data = json.load(f)
     [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
     new_timestamp = datetime.utcfromtimestamp(updatedAt)
-    for i in range(0, 50):
+    for i in range(0, num_vals):
             [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
             old_timestamp = datetime.utcfromtimestamp(updatedAt)
             time_diff = new_timestamp - old_timestamp
@@ -126,4 +150,4 @@ Function: main
 Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
-   print(grab_gas_estimate("BTC/USD"))
+   print(get_better_price("BTC/USD"))

@@ -99,9 +99,10 @@ Below is a table of initial results. Note that for the Band Protocol, I had a bi
 smart contract to get the values for AMPL, so I marked it as `-1`.
 """
 
-# Coins and oracles to look at!
+# Coins, oracles, and timespans to look at!
 coins = ["BTC", "ETH", "AMPL"]
 oracle_names = ["Tellor", "Chainlink", "Band Protocol", "DIA"]
+timespans = [80, 80, 8]
 
 # Dataframe for the Oracle
 oracles = pd.DataFrame({
@@ -116,7 +117,7 @@ oracles.loc[len(oracles.index)] = ['Chainlink'] +  scripts.chainlink.grab_feeds(
 
 # Getting data for Tellor
 tellor_contract = scripts.tellor.set_up_contract()
-oracles.loc[len(oracles.index)] = ['Tellor'] + scripts.tellor.grab_feeds(tellor_contract)
+oracles.loc[len(oracles.index)] = ['Tellor'] + scripts.tellor.grab_feeds()
 
 # Getting data for Dia
 dia_data = ['DIA']
@@ -143,7 +144,7 @@ of specific oracles and their smart contracts, I was able to grab historical dat
 
 As a general methodology, I first grabbed the latest request for a value for each price feed. For both Tellor and Chainlink,
 the respective functions from the respective ABIs returned round IDs. Thus, by subtracting 1 for each previous round, I was able
-to iterate over the previous 50 rounds by grabbing the value of a price feed at a specific ID or timestamp.
+to iterate over the previous 5 days by grabbing the value of a price feed at a specific ID or timestamp.
 
 Below are the functions I utilized from each ABI:
 * Tellor: `getDataBefore(uint256 _requestId, uint256 _timestamp)`
@@ -153,17 +154,15 @@ Below are the functions I utilized from each ABI:
 
 """
 
-coin_prices = range(1, 52)
-
-# Loop for each protocol
-for coin in coins:
-    tellor_btc_prices = scripts.tellor.grab_price_change(tellor_contract, coin + "/USD")
-    chainlink_btc_prices = scripts.chainlink.grab_price_change(coin + "/USD")
-    st.markdown('** Graph of Value of ' + coin + ' **')
+# Looking at all of the data, and then getting those values
+for i in range(0, len(coins)):
+    tellor_prices = scripts.tellor.get_better_price(coins[i] + "/USD", timespans[i])
+    chainlink_prices = scripts.chainlink.get_better_price(coins[i] + "/USD", timespans[i])
     coin_df = pd.DataFrame({
-        'Tellor': tellor_btc_prices,
-        'Chainlink': chainlink_btc_prices
+        'Tellor': tellor_prices,
+        'Chainlink': chainlink_prices
     })
+    st.markdown('** Graph of Value of ' + coins[i] + '/USD **')
     st.line_chart(coin_df)
 
 """
