@@ -20,7 +20,7 @@ Accesses the Tellor ABI, connects to the Tellor contract, and returns to use
 def set_up_contract():
     f = open('contracts/tellorLens.json', 'r')
     abi = json.load(f)
-    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/50b206f08a5745818266c90ac93c86b2'))
     address = '0xb2b6c6232d38fae21656703cac5a74e5314741d4'
     f.close()
     return web3.eth.contract(address=Web3.toChecksumAddress(address), abi=abi)

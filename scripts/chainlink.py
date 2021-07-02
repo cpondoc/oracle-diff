@@ -132,7 +132,7 @@ def grab_gas_estimate(id_name):
     with open('feeds/chainlink.json') as f:
         data = json.load(f)
     address = (data[id_name]['address'])
-    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/50b206f08a5745818266c90ac93c86b2'))
     f = open('contracts/chainlink.json', 'r')
     abi = json.load(f)
     contract = web3.eth.contract(address=address, abi=abi)

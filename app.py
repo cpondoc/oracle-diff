@@ -19,7 +19,7 @@ st.set_page_config(
 
 """
 # 🔮 Comparing Oracles
-👨🏽‍💻 Written by: Christopher Pondoc
+👨🏽‍💻 Written by: [Christopher Pondoc](http://chrispondoc.com/)
 
 This project analyzes different oracles within the world of blockchain development through a data science lens.
 By observing and comparing various relevant metrics of oracles, I was able to gain some reasonable comprehension about
@@ -36,10 +36,11 @@ when a certain amount of conditions are met [1]. Despite the many advantages of 
 outside of the blockchain onto the blockchain. Such data can include information about the weather, random numbers, or price feeds of different currencies.
 
 This is where oracles come in: these mechanisms help to retrieve data from off the blockchain for smart contracts to use for dispensing money, making decisions,
-and more [2]. In this specific report, we'll be looking at oracles and price feed                        data, and u                         nderstanding how different oracles perform compared to one another.
+and more [2]. In this specific report, we'll be looking at oracles and price feed data, and understanding how different oracles perform compared to one another.
 
 ### **Specific Oracles**
-In the case of this task, we'll be focusing on the following oracles:
+In the case of this task, we'll be focusing on the following oracles. As a primer to the differences between the differences between these oracles and their
+implementations, check out this [article](https://www.reddit.com/r/TellorOfficial/comments/nv2ej1/oracle_comparison_what_makes_tellor_different/?utm_medium=android_app&utm_source=share):
 * Tellor [3]
 * Chainlink [4]
 * Band Protocol [5]

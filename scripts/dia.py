@@ -16,7 +16,7 @@ Function: get_contract
 Get the smart contract info using web3.py
 """
 def get_contract():
-    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/f5470eb326af43adadbb81276c2e4675'))
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/50b206f08a5745818266c90ac93c86b2'))
     f = open('contracts/dia.json', 'r')
     abi = json.load(f)
     contract = web3.eth.contract(address="0xD47FDf51D61c100C447E2D4747c7126F19fa23Ef", abi=abi)
