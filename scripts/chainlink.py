@@ -10,7 +10,8 @@ from datetime import datetime, timedelta
 import math
 
 """ Constants """
-num_vals = 100 # Number of past values to grab for looking at history
+NUM_VALS = 100 # Number of past values to grab for looking at history
+TIME_CHANGE = 20 # Number of time changes to look at
 
 """ 
 Function: calculate_price()
@@ -77,7 +78,7 @@ def grab_price_change(exchange):
         data = json.load(f)
     [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
     all_prices.append(calculate_price(answer, decimals))
-    for i in range(0, num_vals - 1):
+    for i in range(0, NUM_VALS - 1):
             [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(exchange, data[exchange]['address'], roundId - 1)
             all_prices.append(calculate_price(answer, decimals))
     return all_prices[::-1]
@@ -110,19 +111,22 @@ Grab the time in between each request for last 50 rounds of chainlink data for a
 """
 def grab_time_change(exchange):
     all_diffs = []
+    all_timestamps = []
     old_timestamp = datetime.now()
     new_timestamp = datetime.now()
     with open('feeds/chainlink.json') as f:
         data = json.load(f)
     [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(str(exchange), data[str(exchange)]['address'])
     new_timestamp = datetime.utcfromtimestamp(updatedAt)
-    for i in range(0, 50):
-            [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(str(exchange), data[str(exchange)]['address'], roundId - 1)
-            old_timestamp = datetime.utcfromtimestamp(updatedAt)
-            time_diff = new_timestamp - old_timestamp
-            all_diffs.append(time_diff.seconds)
-            new_timestamp = old_timestamp
-    return all_diffs[::-1]
+    all_timestamps.append(datetime.fromtimestamp(updatedAt))
+    for i in range(0, TIME_CHANGE):
+        [roundId, answer, startedAt, updatedAt, answeredInRound] = grab_round(str(exchange), data[str(exchange)]['address'], roundId - 1)
+        old_timestamp = datetime.utcfromtimestamp(updatedAt)
+        all_timestamps.append(datetime.fromtimestamp(updatedAt))
+        time_diff = new_timestamp - old_timestamp
+        all_diffs.append(time_diff.seconds)
+        new_timestamp = old_timestamp
+    return all_diffs[::-1], all_timestamps[:20]
 
 """
 Function: grab_gas_estimate()
@@ -155,4 +159,4 @@ Function: main
 Runs all of the entirety of the helper functions
 """
 if __name__ == "__main__":
-   print(get_better_price("BTC/USD"))
+   (grab_time_change("BTC/USD"))

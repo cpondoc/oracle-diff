@@ -1,21 +1,35 @@
 # Importing essential libraries for parsing data and presentation
-import streamlit as st
+from datetime import datetime
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import matplotlib.font_manager as fm
+import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
+import streamlit as st
 
 # Importing scripts from individual oracles
 import scripts.chainlink
 import scripts.tellor
 import scripts.dia
 import scripts.band
+import scripts.gas
 
-# Configuration!
+# Streamlit Configuration!
 st.set_page_config(
      page_title="Oracle-Diff",
      page_icon="🔮",
      layout="centered",
      initial_sidebar_state="expanded",
 )
+
+# Matplotlib Configuration!
+fe = fm.FontEntry(
+    fname='style/Renogare.ttf',
+    name='Renogare')
+fm.fontManager.ttflist.insert(0, fe)
+mpl.rcParams['font.family'] = fe.name
+mpl.rcParams['xtick.labelsize'] = 8
 
 """
 # 🔮 Comparing Oracles
@@ -79,6 +93,24 @@ return web3.eth.contract(address=address, abi=abi)
 ```
 
 """
+
+# Getting proper gas times and stuff
+chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change("BTC/USD")
+gas_prices, gas_times = scripts.gas.get_timestamps()
+indices = []
+for timestamp in chainlink_timestamps:
+    difference = int(10000000)
+    index = int(0)
+    for other_timestamp in gas_times:
+        other_diff = int(abs(other_timestamp - int(datetime.timestamp(timestamp))))
+        print(other_diff)
+        if (other_diff < difference):
+            difference = other_diff
+            index = int(gas_times.index(other_timestamp))
+    indices.append(index)
+indices
+    
+
 """
 ***
 ## 📊 **Data Analysis**
@@ -99,11 +131,10 @@ For each oracle, I utilizes the below functions from their ABIs:
 Below is a table of initial results. Note that for the Band Protocol, I had a bit of trouble communicating with their
 smart contract to get the values for AMPL, so I marked it as `-1`.
 """
-
 # Coins, oracles, and timespans to look at!
 coins = ["BTC", "ETH", "AMPL"]
 oracle_names = ["Tellor", "Chainlink", "Band Protocol", "DIA"]
-timespans = [80, 80, 8]
+timespans = [25, 25, 8] # If changed, originally 80
 
 # Dataframe for the Oracle
 oracles = pd.DataFrame({
@@ -155,14 +186,22 @@ Below are the functions I utilized from each ABI:
 
 # Looking at all of the data, and then getting those values
 for i in range(0, len(coins)):
-    tellor_prices = scripts.tellor.get_better_price(coins[i] + "/USD", timespans[i])
+
+    # Grab values
+    tellor_prices, tellor_timestamps = scripts.tellor.get_better_price(coins[i] + "/USD", timespans[i])
     chainlink_prices = scripts.chainlink.get_better_price(coins[i] + "/USD", timespans[i])
-    coin_df = pd.DataFrame({
-        'Tellor': tellor_prices,
-        'Chainlink': chainlink_prices
-    })
+
+    # Graph the values
     st.markdown('** Graph of Value of ' + coins[i] + '/USD **')
-    st.line_chart(coin_df)
+    fig, ax = plt.subplots()
+    ax.plot(tellor_timestamps, tellor_prices, label="Tellor")
+    ax.plot(tellor_timestamps, chainlink_prices, label="Chainlink")
+    ax.set_title("Prices for " + coins[i] + "/USD", fontweight="bold", fontsize="10")
+    ax.set_xlabel("Time", fontsize="10")
+    ax.set_ylabel("Price (in USD)", fontsize="10")
+    ax.set_xticks(tellor_timestamps[::5])
+    ax.legend()
+    st.pyplot(fig)
 
 """
 ***
@@ -185,18 +224,13 @@ for i in range(0, len(coins)):
 
     # Grab time changes
     tellor_times = scripts.tellor.grab_time_change(str(coins[i] + "/USD"))
-    chainlink_times = scripts.chainlink.grab_time_change(coins[i] + "/USD")
+    chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change(coins[i] + "/USD")
 
     # Save BTC times for future reference
     if (i  == 0):
         tellor_btc_times = tellor_times
         chainlink_btc_times = chainlink_times
 
-    # Update stacked array and avearges
-    coin_times = pd.DataFrame({
-        'Tellor': tellor_times,
-        'Chainlink': chainlink_times
-    })
     averages[0] = np.average(tellor_times)
     averages[1] = np.average(chainlink_times)
 
@@ -204,7 +238,22 @@ for i in range(0, len(coins)):
     st.markdown('** Graph of time in between requests of ' + coins[i] + ' **')
     st.text('Average time in between each request for Tellor: ' + str(averages[0]) + ' seconds')
     st.text('Average time in between each request for Chainlink: ' + str(averages[1]) + ' seconds')
-    st.line_chart(coin_times)
+
+    # Graph values
+    fig, ax = plt.subplots()
+    ax.plot(chainlink_timestamps, tellor_times, label="Tellor")
+    ax.plot(chainlink_timestamps, chainlink_times, label="Chainlink")
+    ax.set_title("Time Between Each Request for " + coins[i] + "/USD", fontweight="bold", fontsize="10")
+    ax.set_xlabel("Time", fontsize="10")
+    ax.set_ylabel("Total Time to Fulfill Request (s)", fontsize="10")
+    if (i != 2):
+        axes = plt.gca()
+        formatter = mdates.DateFormatter("%Y-%m-%d %H:%M:%S")
+        axes.xaxis.set_major_formatter(formatter)
+        locator = mdates.DayLocator()
+        axes.xaxis.set_major_locator(locator)
+    ax.legend()
+    st.pyplot(fig)
 
 """
 ***
