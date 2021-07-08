@@ -110,7 +110,6 @@ for timestamp in chainlink_timestamps:
     indices.append(index)
 indices
     
-
 """
 ***
 ## 📊 **Data Analysis**
@@ -196,7 +195,7 @@ for i in range(0, len(coins)):
     fig, ax = plt.subplots()
     ax.plot(tellor_timestamps, tellor_prices, label="Tellor")
     ax.plot(tellor_timestamps, chainlink_prices, label="Chainlink")
-    ax.set_title("Prices for " + coins[i] + "/USD", fontweight="bold", fontsize="10")
+    ax.set_title("Prices for " + coins[i] + "/USD", fontweight="bold", fontsize="12")
     ax.set_xlabel("Time", fontsize="10")
     ax.set_ylabel("Price (in USD)", fontsize="10")
     ax.set_xticks(tellor_timestamps[::5])
@@ -216,8 +215,6 @@ updated to when the next requested was started.
 # Arrays for two important times to be analyzed
 tellor_btc_times = []
 chainlink_btc_times = []    
-coin_times = np.zeros((2, 50)) # To store data
-averages = [0, 0] # To look at coin averages
 
 # Looping through each coin
 for i in range(0, len(coins)):
@@ -231,19 +228,16 @@ for i in range(0, len(coins)):
         tellor_btc_times = tellor_times
         chainlink_btc_times = chainlink_times
 
-    averages[0] = np.average(tellor_times)
-    averages[1] = np.average(chainlink_times)
-
     # Print out values for specific coin
     st.markdown('** Graph of time in between requests of ' + coins[i] + ' **')
-    st.text('Average time in between each request for Tellor: ' + str(averages[0]) + ' seconds')
-    st.text('Average time in between each request for Chainlink: ' + str(averages[1]) + ' seconds')
+    st.text('Average time in between each request for Tellor: ' + str(np.average(tellor_times)) + ' seconds')
+    st.text('Average time in between each request for Chainlink: ' + str(np.average(chainlink_times)) + ' seconds')
 
     # Graph values
     fig, ax = plt.subplots()
     ax.plot(chainlink_timestamps, tellor_times, label="Tellor")
     ax.plot(chainlink_timestamps, chainlink_times, label="Chainlink")
-    ax.set_title("Time Between Each Request for " + coins[i] + "/USD", fontweight="bold", fontsize="10")
+    ax.set_title("Time Between Each Request for " + coins[i] + "/USD", fontweight="bold", fontsize="12")
     ax.set_xlabel("Time", fontsize="10")
     ax.set_ylabel("Total Time to Fulfill Request (s)", fontsize="10")
     if (i != 2):
@@ -267,17 +261,29 @@ and analyze the standard deviation.
 """
 #### Tellor
 """
+st.text("Mean of Tellor times: " + str(np.mean(tellor_btc_times)) + " seconds")
+st.text("Median of Tellor times: " + str(np.median(tellor_btc_times)) + " seconds")
 st.text("Standard Deviation of Tellor times: " + str(np.std(tellor_btc_times)) + " seconds")
-tellor_btc_histogram = np.histogram(tellor_btc_times, bins=15)[0]
-st.bar_chart(tellor_btc_histogram)
+fig, ax = plt.subplots()
+ax.hist(tellor_btc_times, bins=15)
+ax.set_title("Standard Deviation of Tellor Request Times for BTC", fontsize="12")
+ax.set_xlabel("Total Time to Fulfill Request (s)", fontsize="10")
+ax.set_ylabel("Frequencies", fontsize="10")
+st.pyplot(fig)
 
 # Histogram + Standard Deviation for Chainlink
 """
 #### Chainlink
 """
+st.text("Mean of Chainlink times: " + str(np.mean(chainlink_btc_times)) + " seconds")
+st.text("Median of Chainlink times: " + str(np.median(chainlink_btc_times)) + " seconds")
 st.text("Standard Deviation of Chainlink times: " + str(np.std(chainlink_btc_times)) + " seconds")
-chainlink_btc_histogram = np.histogram(chainlink_btc_times, bins=15)[0]
-st.bar_chart(chainlink_btc_histogram)
+fig, ax = plt.subplots()
+ax.hist(chainlink_btc_times, bins=15)
+ax.set_title("Standard Deviation of Chainlink Request Times for BTC", fontsize="12")
+ax.set_xlabel("Total Time to Fulfill Request (s)", fontsize="10")
+ax.set_ylabel("Frequencies", fontsize="10")
+st.pyplot(fig)
 
 """
 ***
@@ -308,7 +314,15 @@ st.markdown("** Graph of Gas Estimates for Grabbing Current Value **")
 # Print all results!
 for i in range(0, len(oracles)):
     st.text('Average Gas Price for Single Value Request for ' + oracle_names[i] + ': ' + str(gas_prices[i]) + ' Gwei')
-st.bar_chart((gas_prices))
+
+# Graph Results
+fig, ax = plt.subplots()
+ax.bar(oracle_names,gas_prices)
+ax.set_title("Graph of Gas Estimates for Different Oracles", fontsize="12")
+ax.set_xlabel("Oracle", fontsize="10")
+ax.set_ylabel("Gas Price (Gwei)", fontsize="10")
+st.pyplot(fig)
+
 
 """
 ***
