@@ -22,7 +22,7 @@ Accesses the Tellor ABI, connects to the Tellor contract, and returns to use
 def set_up_contract():
     f = open('contracts/tellorLens.json', 'r')
     abi = json.load(f)
-    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/50b206f08a5745818266c90ac93c86b2'))
+    web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/1cc3d60f38f64e469c4ea250ddeb0c54'))
     address = '0xb2b6c6232d38fae21656703cac5a74e5314741d4'
     f.close()
     return web3.eth.contract(address=Web3.toChecksumAddress(address), abi=abi)
@@ -112,7 +112,7 @@ def grab_time_change(id_name):
         all_diffs.append(time_diff.seconds)
         all_timestamps.append(datetime.utcfromtimestamp(timestamp))
         new_timestamp = old_timestamp
-    return all_diffs[::-1]
+    return all_diffs[::-1], all_timestamps[:20]
 
 """
 Function: grab_gas_estimate()

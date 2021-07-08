@@ -6,6 +6,7 @@ import matplotlib.font_manager as fm
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
+from scipy import stats
 import streamlit as st
 
 # Importing scripts from individual oracles
@@ -93,22 +94,6 @@ return web3.eth.contract(address=address, abi=abi)
 ```
 
 """
-
-# Getting proper gas times and stuff
-chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change("BTC/USD")
-gas_prices, gas_times = scripts.gas.get_timestamps()
-indices = []
-for timestamp in chainlink_timestamps:
-    difference = int(10000000)
-    index = int(0)
-    for other_timestamp in gas_times:
-        other_diff = int(abs(other_timestamp - int(datetime.timestamp(timestamp))))
-        print(other_diff)
-        if (other_diff < difference):
-            difference = other_diff
-            index = int(gas_times.index(other_timestamp))
-    indices.append(index)
-indices
     
 """
 ***
@@ -220,7 +205,7 @@ chainlink_btc_times = []
 for i in range(0, len(coins)):
 
     # Grab time changes
-    tellor_times = scripts.tellor.grab_time_change(str(coins[i] + "/USD"))
+    tellor_times, tellor_timestamps = scripts.tellor.grab_time_change(str(coins[i] + "/USD"))
     chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change(coins[i] + "/USD")
 
     # Save BTC times for future reference
@@ -288,19 +273,13 @@ st.pyplot(fig)
 """
 ***
 ### ⛽️ **Gas Prices**
-The final metric I decided to investigate involved analyzing the gas estimates for retrieving data from each specific oracle.
+Another metric I decided to investigate involved analyzing the gas estimates for retrieving data from each specific oracle.
 Simply put, gas refers to the cost needed in order to perform a transaction on a blockchain network. Transactions fees are
 equal to the product of the units of gas used and the price per unit. However, the units of gas is ultimately fixed [11]. In order
 to calculate each gas price, I utilized the `estimate_gas()` function within `web3.py`.
 
 It's also important to note that the amount of gas required is also highly dependent on the amount of data being sent back
 from the smart contract and the function being called.
-
-Key:
-* 0 - Tellor
-* 1 - Chainlink
-* 2 - DIA
-* 3 - Band Protocol
 """
 
 # Grabbing all gas prices for calling BTC!
@@ -323,6 +302,58 @@ ax.set_xlabel("Oracle", fontsize="10")
 ax.set_ylabel("Gas Price (Gwei)", fontsize="10")
 st.pyplot(fig)
 
+"""
+***
+### 🕰 x ⛽️ **Change in Request Time vs. Gas**
+When looking at request time, the last relevant portion to note is how the time to fulfill each request changes
+with fluctuating gas prices. Note that changing gas prices are due to increased demand on the blockchain.
+
+In addition to plotting the scatterplot, the equation for the best-fit line, found using regression, is calculated.
+From this data, we can also provide the corresponding correlation and p-value. A smaller absolute value of the correlation
+indicates that there is less of a relationship between gas prices and request times.
+
+"""
+
+# Getting proper gas times and time differences between each request
+chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change("BTC/USD")
+tellor_times, tellor_timestamps = scripts.tellor.grab_time_change("BTC/USD")
+gas_prices, gas_times = scripts.gas.get_timestamps()
+
+# Getting the corresponding gas prices for Chainlink, and plotting
+chainlink_prices = scripts.gas.get_corresponding_prices(chainlink_timestamps, gas_times, gas_prices)
+fig, ax = plt.subplots()
+ax.scatter(chainlink_times, chainlink_prices)
+m, b = np.polyfit(chainlink_times, chainlink_prices, 1)
+ax.plot(chainlink_times, m*(np.array(chainlink_times).astype(np.float64)) + b)
+chainlink_corr = stats.pearsonr(chainlink_times, chainlink_prices)
+
+st.markdown('** Scatter Plot of Request Time vs. Gas Price for Chainlink **')
+st.text('Linear Regression: m = ' + str(m) + ', b = ' + str(b))
+st.text('Pearson Correlation Coefficient: r = ' + str(chainlink_corr[0]))
+st.text('P-Value: p = ' + str(chainlink_corr[1]))
+
+ax.set_title("Request Time vs. Gas Price for Chainlink", fontsize="12")
+ax.set_xlabel("Time to Fulfill Request (s)", fontsize="10")
+ax.set_ylabel("Gas Price (Gwei)", fontsize="10")
+st.pyplot(fig)
+
+# Getting the corresponding gas prices for Tellor, and plotting
+tellor_prices = scripts.gas.get_corresponding_prices(tellor_timestamps, gas_times, gas_prices)
+fig, ax = plt.subplots()
+ax.scatter(tellor_times, tellor_prices)
+m, b = np.polyfit(tellor_times, tellor_prices, 1)
+ax.plot(tellor_times, m*(np.array(tellor_times).astype(np.float64)) + b)
+tellor_corr = stats.pearsonr(tellor_times, tellor_prices)
+
+st.markdown('** Scatter Plot of Request Time vs. Gas Price for Tellor **')
+st.text('Linear Regression: m = ' + str(m) + ', b = ' + str(b))
+st.text('Pearson Correlation Coefficient: r = ' + str(tellor_corr[0]))
+st.text('P-Value: p = ' + str(tellor_corr[1]))
+
+ax.set_title("Request Time vs. Gas Price for Tellor", fontsize="12")
+ax.set_xlabel("Time to Fulfill Request (s)", fontsize="10")
+ax.set_ylabel("Gas Price (Gwei)", fontsize="10")
+st.pyplot(fig)
 
 """
 ***
