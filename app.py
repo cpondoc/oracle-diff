@@ -164,8 +164,6 @@ Below are the functions I utilized from each ABI:
 * Tellor: `getDataBefore(uint256 _requestId, uint256 _timestamp)`
 * Chainlink: `getRoundData(uint80 _roundId)`
 
-*Note: Horizontal Axis is Request #, Vertical Axis is Price in USD*
-
 """
 
 # Looking at all of the data, and then getting those values
@@ -194,7 +192,6 @@ Next, I decided to investigate the time that it took to satisfy each request for
 feed. Between requests, I would calculate the time difference between the Unix timestamps of when the value was previously
 updated to when the next requested was started.
 
-*Note: Horizontal Axis is Request #, Vertical Axis is Time in Seconds*
 """
 
 # Arrays for two important times to be analyzed
