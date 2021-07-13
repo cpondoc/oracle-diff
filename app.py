@@ -30,7 +30,7 @@ fe = fm.FontEntry(
     name='Renogare')
 fm.fontManager.ttflist.insert(0, fe)
 mpl.rcParams['font.family'] = fe.name
-mpl.rcParams['xtick.labelsize'] = 8
+mpl.rcParams['xtick.labelsize'] = 6
 
 """
 # 🔮 Comparing Oracles

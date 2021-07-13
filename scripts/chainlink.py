@@ -91,7 +91,8 @@ def get_better_price(exchange, number_values):
     all_prices = []
     with open('feeds/chainlink.json') as f:
         data = json.load(f)
-    old_date = datetime.timestamp(datetime.now() - timedelta(days=5))
+    # old_date = datetime.timestamp(datetime.now() - timedelta(days=5))
+    old_date = datetime.timestamp(datetime.now() - timedelta(days=8))
     [roundId, answer, startedAt, updatedAt, answeredInRound, decimals] = get_chainlink_data(exchange, data[exchange]['address'])
     all_prices.append(calculate_price(answer, decimals))
     while (old_date < startedAt):
