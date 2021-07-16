@@ -70,12 +70,10 @@ def get_better_price(id_name, number_values):
     with open('feeds/tellor.json') as f:
         data = json.load(f)
     id_num = int(data[id_name]['id'])
-    #old_date = datetime.timestamp(datetime.now() - timedelta(days=5))
     old_date = datetime.timestamp(datetime.now() - timedelta(days=8))
     initial_data = contract.functions.getCurrentValue(id_num).call()
     all_prices.append(initial_data[1] / GRANULAITY)
     all_timestamps.append(datetime.fromtimestamp(int(initial_data[2])))
-    #print(initial_data)
     while (old_date < initial_data[2]):
         initial_data = contract.functions.getDataBefore(id_num, initial_data[2]).call()
         all_prices.append(initial_data[1] / GRANULAITY)

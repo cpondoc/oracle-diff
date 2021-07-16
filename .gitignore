@@ -1,2 +1,4 @@
 __pycache__
 config.py
+.DS_Store
+scripts/helpers/proper_date.py
