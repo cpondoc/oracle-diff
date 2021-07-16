@@ -8,12 +8,12 @@ Round Data format = [roundId, answer, startedAt, updatedAt, answeredInRound, dec
 '''
 
 ''' Libraries necessary for development '''
-import json
 from datetime import datetime, timedelta
 import math
 import scripts.helpers.contract
 
 ''' Constants '''
+REF_PATH = 'feeds/chainlink.json' # Path for external data
 NUM_VALS = 100 # Number of past values to grab for looking at history
 TIME_CHANGE = 20 # Number of time changes to look at
 DAYS_BACK = 8 # Number of days to look in past
@@ -41,8 +41,7 @@ def grab_feeds():
     to get all of the addresses
     '''
     prices = []
-    with open('feeds/chainlink.json') as f:
-        data = json.load(f)
+    data = scripts.helpers.contract.reference_data(REF_PATH)
     for elem in data:
         roundData = get_chainlink_data(data[elem]['address'])
         prices.append(calculate_price(roundData[1], roundData[5]))
@@ -60,8 +59,7 @@ def grab_price_change(exchange):
     Grab last NUM_VALS rounds of chainlink data for a specific exchange
     '''
     all_prices = []
-    with open('feeds/chainlink.json') as f:
-        data = json.load(f)
+    data = scripts.helpers.contract.reference_data(REF_PATH)
     roundData = get_chainlink_data(data[exchange]['address'])
     all_prices.append(calculate_price(roundData[1], roundData[5]))
     for i in range(0, NUM_VALS - 1):
@@ -74,8 +72,7 @@ def get_better_price(exchange, number_values):
     Get the change in price over a certain amount of time!
     '''
     all_prices = []
-    with open('feeds/chainlink.json') as f:
-        data = json.load(f)
+    data = scripts.helpers.contract.reference_data(REF_PATH)
     old_date = datetime.timestamp(datetime.now() - timedelta(days=DAYS_BACK)) # Number of days to look back
 
     # Get current data
@@ -102,8 +99,7 @@ def grab_time_change(exchange):
     all_timestamps = []
     old_timestamp = datetime.now()
     new_timestamp = datetime.now()
-    with open('feeds/chainlink.json') as f:
-        data = json.load(f)
+    data = scripts.helpers.contract.reference_data(REF_PATH)
     roundData = get_chainlink_data(data[str(exchange)]['address'])
     new_timestamp = datetime.utcfromtimestamp(roundData[3])
     all_timestamps.append(datetime.fromtimestamp(roundData[3]))
@@ -120,8 +116,7 @@ def grab_gas_estimate(id_name):
     '''
     Grabs the gas estimate for getting the latest value of an exchange
     '''
-    with open('feeds/chainlink.json') as f:
-        data = json.load(f)
+    data = scripts.helpers.contract.reference_data(REF_PATH)
     address = (data[id_name]['address'])
     contract = scripts.helpers.contract.get_contract('contracts/chainlink.json', address)
     return (contract.functions.latestRoundData().estimateGas())
