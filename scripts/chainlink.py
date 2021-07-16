@@ -3,8 +3,7 @@ File: chainlink.py
 Retrieves necessary data and prices from Chainlink!
 
 Notes:
-
-Round Data format = [roundId, answer, startedAt, updatedAt, answeredInRound, decimals]
+- Round Data format = [roundId, answer, startedAt, updatedAt, answeredInRound, decimals]
 '''
 
 ''' Libraries necessary for development '''

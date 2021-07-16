@@ -4,8 +4,6 @@ Getting data from the Band Protocol network
 '''
 
 ''' Libraries '''
-from web3 import Web3
-import json
 import scripts.helpers.contract
 
 ''' Constants '''
@@ -13,7 +11,7 @@ granularity = 10 ** 18 # For helping parse through data from the blockchain
 bases = ['BTC', 'ETH'] # For base of conversion
 converts = ['USD', 'ETH'] # For what is going to be converted into
 
-''' Setting up Smart Contract '''
+''' Smart Contract Set-Up '''
 band_contract = scripts.helpers.contract.get_contract('contracts/bandchain.json', '0xDA7a001b254CD22e46d3eAB04d937489c93174C3')
 
 """
