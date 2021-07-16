@@ -6,9 +6,9 @@ Maintained by: Chris Pondoc
 ![image info](./images/dashboard_screenshot.png)
 
 ## Reference
-To check out the written version of this report, click [here](https://github.com/cpondoc/oracle-diff/tree/master/style/oracle-report.pdf)
+To check out the written version of this report, click [here](https://github.com/cpondoc/oracle-diff/blob/master/oracle-report.pdf).
 
-To check out the accompanying video report during Tellor's community call, click [here](https://www.youtube.com/watch?v=QMVl0bInf6o&t=33s)
+To check out the accompanying video report during Tellor's community call, click [here](https://www.youtube.com/watch?v=QMVl0bInf6o&t=33s).
 
 ## Structure
 * `helpers` helped me to organize connecting to each contract using `web3.py`, utilizing each application binary interface (ABI), and grabbing the correct values.
