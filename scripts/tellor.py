@@ -7,7 +7,7 @@ Grabs data from Tellor and get all results
 import json
 from datetime import datetime, timedelta
 import math
-import helpers.contract
+import scripts.helpers.contract
 
 ''' Constants '''
 ABI_PATH = 'contracts/tellorLens.json' # Relative path to ABI
@@ -19,7 +19,7 @@ NUM_VALS = 100 # Number of past values to grab for looking at history
 TIME_CHANGE = 20 # Number of time changes to look at
 
 ''' Setting up Smart Contract '''
-tellor_contract = helpers.contract.get_contract(ABI_PATH, ADDRESS)
+tellor_contract = scripts.helpers.contract.get_contract(ABI_PATH, ADDRESS)
 
 def grab_feeds():
     '''
