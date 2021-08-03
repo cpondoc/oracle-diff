@@ -21,7 +21,7 @@ To check out the accompanying video report during Tellor's community call, click
 3. To start the virtual environment, run `source oracle-diff/bin/activate`
 4. From there, enter the directory by running `cd oracle-diff`.
 5. Once you’re in the `oracle-diff` folder and have everything set-up, install all the needed dependencies. This can be done by running `pip install -r requirements.txt`.
-6. Finally, to get the app up and running, simply run `streamline run streamlit_app.py`.
+6. Finally, to get the app up and running, simply run `streamlit run streamlit_app.py`.
 
 ## Analysis
 This report analyzes the following oracles:
