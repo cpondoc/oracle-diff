@@ -132,7 +132,6 @@ oracles = pd.DataFrame({
 oracles.loc[len(oracles.index)] = ['Chainlink'] +  scripts.chainlink.grab_feeds()
 
 # Getting data for Tellor
-tellor_contract = scripts.tellor.set_up_contract()
 oracles.loc[len(oracles.index)] = ['Tellor'] + scripts.tellor.grab_feeds()
 
 # Getting data for Dia
