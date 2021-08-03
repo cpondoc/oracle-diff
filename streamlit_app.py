@@ -1,5 +1,7 @@
 # Importing essential libraries for parsing data and presentation
+import argparse
 from datetime import datetime
+import os
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.font_manager as fm
@@ -8,6 +10,24 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 import streamlit as st
+
+parser = argparse.ArgumentParser(description='This app looks at comparing different oracle services.')
+parser.add_argument('--days', action='store_true',
+                    help="Number of days to look back at.")
+#parser.add_argument('--days', action='append', default=[],
+                    #help="Add one or more animals of your choice")
+#sort_order_choices = ('up', 'down', 'random')
+#parser.add_argument('--sort', choices=sort_order_choices, default='up',
+                    #help='Animal sort order (default: %(default)s)')
+#parser.add_argument('--uppercase', action='store_true',
+                    #help='Make the animals bigger!')
+try:
+    args = parser.parse_args()
+except SystemExit as e:
+    # This exception will be raised if --help or invalid command line arguments
+    # are used. Currently streamlit prevents the program from exiting normally
+    # so we have to do a hard exit.
+    os._exit(e.code)
 
 # Importing scripts from individual oracles
 import scripts.chainlink
