@@ -12,8 +12,7 @@ from scipy import stats
 import streamlit as st
 
 parser = argparse.ArgumentParser(description='This app looks at comparing different oracle services.')
-parser.add_argument('--days', action='store_true',
-                    help="Number of days to look back at.")
+parser.add_argument('--days', type=int, help="Number of days to look back at.")
 #parser.add_argument('--days', action='append', default=[],
                     #help="Add one or more animals of your choice")
 #sort_order_choices = ('up', 'down', 'random')
