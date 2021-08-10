@@ -16,7 +16,7 @@ TIME_CHANGE = 20
 ''' Smart Contract Set-Up'''
 gas_contract = scripts.helpers.contract.get_contract('contracts/chainlink_gas.json', '0x169E633A2D1E6c10dD91238Ba11c4A708dfEF37C')
 
-def get_timestamps():
+def get_timestamps(num_rounds):
     '''
     Get the values and the timestamps for each value
     '''
@@ -24,7 +24,7 @@ def get_timestamps():
     gas_prices = []
     data = gas_contract.functions.latestRoundData().call()
     update_id = data[0]
-    for i in range(0, TIME_CHANGE):
+    for i in range(0, num_rounds):
         data = gas_contract.functions.getRoundData(update_id).call()
         timestamps.append(data[3])
         gas_prices.append(data[1])

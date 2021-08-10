@@ -66,13 +66,13 @@ def grab_price_change(exchange):
             all_prices.append(calculate_price(roundData[1], roundData[5]))
     return all_prices[::-1]
 
-def get_better_price(exchange, number_values):
+def get_better_price(exchange, number_values, num_of_days):
     '''
     Get the change in price over a certain amount of time!
     '''
     all_prices = []
     data = scripts.helpers.contract.reference_data(REF_PATH)
-    old_date = datetime.timestamp(datetime.now() - timedelta(days=DAYS_BACK)) # Number of days to look back
+    old_date = datetime.timestamp(datetime.now() - timedelta(days=num_of_days)) # Number of days to look back
 
     # Get current data
     roundData = get_chainlink_data(data[exchange]['address'])
@@ -90,7 +90,7 @@ def get_better_price(exchange, number_values):
     last_offset = abs(len(all_prices) - number_values)
     return all_prices[last_offset:]
   
-def grab_time_change(exchange):
+def grab_time_change(exchange, num_rounds):
     '''
     Grab the time in between each request for last TIME_VALUE rounds of chainlink data for an exchange
     '''
@@ -102,14 +102,14 @@ def grab_time_change(exchange):
     roundData = get_chainlink_data(data[str(exchange)]['address'])
     new_timestamp = datetime.utcfromtimestamp(roundData[3])
     all_timestamps.append(datetime.fromtimestamp(roundData[3]))
-    for i in range(0, TIME_CHANGE):
+    for i in range(0, num_rounds):
         roundData = grab_round(data[str(exchange)]['address'], roundData[0] - 1)
         new_timestamp = datetime.utcfromtimestamp(roundData[3])
         all_timestamps.append(datetime.fromtimestamp(roundData[3]))
         time_diff = new_timestamp - old_timestamp
         all_diffs.append(time_diff.seconds)
         new_timestamp = old_timestamp
-    return all_diffs[::-1], all_timestamps[:TIME_CHANGE]
+    return all_diffs[::-1], all_timestamps[:num_rounds]
 
 def grab_gas_estimate(id_name):
     '''

@@ -163,20 +163,18 @@ Below are the functions I utilized from each ABI:
 * Tellor: `getDataBefore(uint256 _requestId, uint256 _timestamp)`
 * Chainlink: `getRoundData(uint80 _roundId)`
 
-First, choose the number of rounds of data you want to look back in time.
+** To Run: ** Choose the number of days you want to look back in time.
 """
 
 # Adding slider functionality to look farther back in time
-calculated_timespan = st.slider('Slide to choose a number below:', 0, 60, 25)
+calculated_timespan = st.slider('Slide to choose a number below:', 0, 10, 4) # Change to 8 later on!
 
 # Looking at all of the data, and then getting those values
 for i in range(0, len(coins)):
 
-    # Grab values -- make an exception for AMPL value
-    if (i == 2):
-        calculated_timespan = 8
-    tellor_prices, tellor_timestamps = scripts.tellor.get_better_price(coins[i] + "/USD", calculated_timespan)
-    chainlink_prices = scripts.chainlink.get_better_price(coins[i] + "/USD", calculated_timespan)
+    # Grab values
+    tellor_prices, tellor_timestamps = scripts.tellor.get_better_price(coins[i] + "/USD", timespans[i], calculated_timespan)
+    chainlink_prices = scripts.chainlink.get_better_price(coins[i] + "/USD", timespans[i], calculated_timespan)
 
     # Graph the values
     st.markdown('** Graph of Value of ' + coins[i] + '/USD **')
@@ -197,7 +195,11 @@ Next, I decided to investigate the time that it took to satisfy each request for
 feed. Between requests, I would calculate the time difference between the Unix timestamps of when the value was previously
 updated to when the next requested was started.
 
+** To Run: ** Choose the number of rounds you want to look back in time.
 """
+
+# Adding slider functionality to look farther back in time
+rounds_past = st.slider('Slide to choose a number below:', 0, 50, 20) # Change to 8 later on!
 
 # Arrays for two important times to be analyzed
 tellor_btc_times = []
@@ -207,8 +209,8 @@ chainlink_btc_times = []
 for i in range(0, len(coins)):
 
     # Grab time changes
-    tellor_times, tellor_timestamps = scripts.tellor.grab_time_change(str(coins[i] + "/USD"))
-    chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change(coins[i] + "/USD")
+    tellor_times, tellor_timestamps = scripts.tellor.grab_time_change(str(coins[i] + "/USD"), rounds_past)
+    chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change(coins[i] + "/USD", rounds_past)
 
     # Save BTC times for future reference
     if (i  == 0):
@@ -314,12 +316,13 @@ In addition to plotting the scatterplot, the equation for the best-fit line, fou
 From this data, we can also provide the corresponding correlation and p-value. A smaller absolute value of the correlation
 indicates that there is less of a relationship between gas prices and request times.
 
+** For Reference: ** The number of rounds to look back is determined by the previous slider.
 """
 
 # Getting proper gas times and time differences between each request
-chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change("BTC/USD")
-tellor_times, tellor_timestamps = scripts.tellor.grab_time_change("BTC/USD")
-gas_prices, gas_times = scripts.gas.get_timestamps()
+chainlink_times, chainlink_timestamps = scripts.chainlink.grab_time_change("BTC/USD", rounds_past)
+tellor_times, tellor_timestamps = scripts.tellor.grab_time_change("BTC/USD", rounds_past)
+gas_prices, gas_times = scripts.gas.get_timestamps(rounds_past)
 
 # Getting the corresponding gas prices for Chainlink, and plotting
 chainlink_prices = scripts.gas.get_corresponding_prices(chainlink_timestamps, gas_times, gas_prices)

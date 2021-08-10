@@ -49,7 +49,7 @@ def grab_price_change(id_name):
         all_prices.append(value/GRANULAITY)
     return all_prices[::-1]
 
-def get_better_price(id_name, number_values):
+def get_better_price(id_name, number_values, num_of_days):
     '''
     Updated function get price over time
     '''
@@ -61,7 +61,7 @@ def get_better_price(id_name, number_values):
     id_num = int(data[id_name]['id'])
 
     # Get initial data and old date
-    old_date = datetime.timestamp(datetime.now() - timedelta(days=NUM_DAYS))
+    old_date = datetime.timestamp(datetime.now() - timedelta(days=num_of_days))
     initial_data = tellor_contract.functions.getCurrentValue(id_num).call()
     all_prices.append(initial_data[1] / GRANULAITY)
     all_timestamps.append(datetime.fromtimestamp(int(initial_data[2])))
@@ -83,7 +83,7 @@ def get_better_price(id_name, number_values):
     all_timestamps = all_timestamps[last_offset:]
     return all_prices, all_timestamps
 
-def grab_time_change(id_name):
+def grab_time_change(id_name, num_rounds):
     '''
     Get the change in update time over a certain amount of requests!
     '''
@@ -102,14 +102,14 @@ def grab_time_change(id_name):
     new_timestamp = datetime.utcfromtimestamp(timestamp)
 
     # Loop through time change to get to old values
-    for i in range(0, TIME_CHANGE):
+    for i in range(0, num_rounds):
         [worked, value, timestamp] = (tellor_contract.functions.getDataBefore(id_num, timestamp).call())
         old_timestamp = datetime.utcfromtimestamp(timestamp)
         time_diff = new_timestamp - old_timestamp
         all_diffs.append(time_diff.seconds)
         all_timestamps.append(datetime.utcfromtimestamp(timestamp))
         new_timestamp = old_timestamp
-    return all_diffs[::-1], all_timestamps[:20]
+    return all_diffs[::-1], all_timestamps[:num_rounds]
 
 def grab_gas_estimate(id_name):
     '''
