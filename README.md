@@ -15,7 +15,7 @@ To check out the accompanying video report during Tellor's community call, click
 * `app.py` is the streamlit app that puts all of the data together.
 * `feeds` help me organize IDs for different data feeds (or addresses, depending on the protocol). Contracts contain individual ABIs for each contract.
 
-## Run
+## To Run
 1. Git clone the repository by running: `git clone https://github.com/tellor-io/oracle-diffs.git`
 2. Create a Python virtual environment, so dependencies don’t overlap with one another: `python3 -m venv oracle-diff`.
 3. To start the virtual environment, run `source oracle-diff/bin/activate`

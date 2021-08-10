@@ -163,14 +163,20 @@ Below are the functions I utilized from each ABI:
 * Tellor: `getDataBefore(uint256 _requestId, uint256 _timestamp)`
 * Chainlink: `getRoundData(uint80 _roundId)`
 
+First, choose the number of rounds of data you want to look back in time.
 """
+
+# Adding slider functionality to look farther back in time
+calculated_timespan = st.slider('Slide to choose a number below:', 0, 60, 25)
 
 # Looking at all of the data, and then getting those values
 for i in range(0, len(coins)):
 
-    # Grab values
-    tellor_prices, tellor_timestamps = scripts.tellor.get_better_price(coins[i] + "/USD", timespans[i])
-    chainlink_prices = scripts.chainlink.get_better_price(coins[i] + "/USD", timespans[i])
+    # Grab values -- make an exception for AMPL value
+    if (i == 2):
+        calculated_timespan = 8
+    tellor_prices, tellor_timestamps = scripts.tellor.get_better_price(coins[i] + "/USD", calculated_timespan)
+    chainlink_prices = scripts.chainlink.get_better_price(coins[i] + "/USD", calculated_timespan)
 
     # Graph the values
     st.markdown('** Graph of Value of ' + coins[i] + '/USD **')
