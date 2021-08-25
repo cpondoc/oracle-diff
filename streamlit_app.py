@@ -157,7 +157,7 @@ of specific oracles and their smart contracts, I was able to grab historical dat
 
 As a general methodology, I first grabbed the latest request for a value for each price feed. For both Tellor and Chainlink,
 the respective functions from the respective ABIs returned round IDs. Thus, by subtracting 1 for each previous round, I was able
-to iterate over the previous 5 days by grabbing the value of a price feed at a specific ID or timestamp.
+to iterate over the previous days by grabbing the value of a price feed at a specific ID or timestamp.
 
 Below are the functions I utilized from each ABI:
 * Tellor: `getDataBefore(uint256 _requestId, uint256 _timestamp)`
@@ -167,7 +167,7 @@ Below are the functions I utilized from each ABI:
 """
 
 # Adding slider functionality to look farther back in time
-calculated_timespan = st.slider('Slide to choose a number below:', 0, 10, 4) # Change to 8 later on!
+calculated_timespan = st.slider('Slide to choose a number below:', 8, 30, 30) # Change to 30 later on!
 
 # Looking at all of the data, and then getting those values
 for i in range(0, len(coins)):
@@ -181,6 +181,7 @@ for i in range(0, len(coins)):
     fig, ax = plt.subplots()
     ax.plot(tellor_timestamps, tellor_prices, label="Tellor")
     ax.plot(tellor_timestamps, chainlink_prices, label="Chainlink")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
     ax.set_title("Prices for " + coins[i] + "/USD", fontweight="bold", fontsize="12")
     ax.set_xlabel("Time", fontsize="10")
     ax.set_ylabel("Price (in USD)", fontsize="10")
@@ -199,7 +200,7 @@ updated to when the next requested was started.
 """
 
 # Adding slider functionality to look farther back in time
-rounds_past = st.slider('Slide to choose a number below:', 0, 50, 20) # Change to 8 later on!
+rounds_past = st.slider('Slide to choose a number below:', 2, 300, 300) # Change to 300 later on!
 
 # Arrays for two important times to be analyzed
 tellor_btc_times = []
@@ -226,12 +227,15 @@ for i in range(0, len(coins)):
     fig, ax = plt.subplots()
     ax.plot(chainlink_timestamps, tellor_times, label="Tellor")
     ax.plot(chainlink_timestamps, chainlink_times, label="Chainlink")
+
+    # Format axes
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
     ax.set_title("Time Between Each Request for " + coins[i] + "/USD", fontweight="bold", fontsize="12")
     ax.set_xlabel("Time", fontsize="10")
     ax.set_ylabel("Total Time to Fulfill Request (s)", fontsize="10")
     if (i != 2):
         axes = plt.gca()
-        formatter = mdates.DateFormatter("%Y-%m-%d %H:%M:%S")
+        formatter = mdates.DateFormatter("%m-%d")
         axes.xaxis.set_major_formatter(formatter)
         locator = mdates.DayLocator()
         axes.xaxis.set_major_locator(locator)
